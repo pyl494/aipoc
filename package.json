@@ -1,0 +1,25 @@
+{
+  "name": "csit321-ai-proof-of-concept",
+  "version": "0.0.1",
+  "description": "A proof of concept for the CSIT321 Atlassian AI project",
+  "dependencies": {
+    "dependencies": "0.0.1",
+    "express": "latest"
+  },
+  "devDependencies": {
+    "ngrok": "latest",
+    "typescript": "latest",
+    "@types/express": "latest"
+  },
+  "scripts": {
+    "start": "npm run tsc && node build/index.js",
+    "tsc": "tsc",
+    "ngrok": "ngrok http 8000"
+  },
+  "main": "build/index.js",
+  "bin": {
+    "main": "bin/main"
+  },
+  "author": "",
+  "license": ""
+}

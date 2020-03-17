@@ -1,0 +1,34 @@
+{
+    "name": "CSIT321-Proof-Of-Concept",
+    "description": "Atlassian Connect app",
+    "key": "com.example.myapp",
+    "baseUrl": "https://f89bd92a.ngrok.io",
+    "vendor": {
+        "name": "Example, Inc.",
+        "url": "http://example.com"
+    },
+    "authentication": {
+        "type": "none"
+    },
+    "apiVersion": 1,
+    "modules": {
+        "generalPages": [
+            {
+                "url": "/static/index-static.html",
+                "key": "index-static",
+                "location": "system.top.navigation.bar",
+                "name": {
+                    "value": "CSIT321 Proof Of Concept [Static]"
+                }
+            },
+            {
+                "url": "/index",
+                "key": "index",
+                "location": "system.top.navigation.bar",
+                "name": {
+                    "value": "CSIT321 Proof Of Concept [Dynamic]"
+                }
+            }
+        ]
+    }
+}
