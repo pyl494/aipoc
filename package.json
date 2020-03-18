@@ -1,25 +1,29 @@
 {
-  "name": "csit321-ai-proof-of-concept",
+  "name": "my-app",
   "version": "0.0.1",
-  "description": "A proof of concept for the CSIT321 Atlassian AI project",
+  "private": true,
+  "scripts": {
+    "start": "node -r esm app.js",
+    "ngrok": "ngrok",
+    "lint": "eslint app.js routes"
+  },
   "dependencies": {
-    "dependencies": "0.0.1",
-    "express": "latest"
+    "atlassian-connect-express": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.4",
+    "errorhandler": "^1.5.1",
+    "esm": "^3.2.22",
+    "express": "^4.16.4",
+    "express-hbs": "^2.3.0",
+    "helmet": "^3.21.2",
+    "morgan": "^1.9.1",
+    "sequelize": "^5.21.2"
   },
   "devDependencies": {
-    "ngrok": "latest",
-    "typescript": "latest",
-    "@types/express": "latest"
-  },
-  "scripts": {
-    "start": "npm run tsc && node build/index.js",
-    "tsc": "tsc",
-    "ngrok": "ngrok http 8000"
-  },
-  "main": "build/index.js",
-  "bin": {
-    "main": "bin/main"
-  },
-  "author": "",
-  "license": ""
+    "eslint": "^5.16.0",
+    "longjohn": "^0.2.12",
+    "ngrok": "^3.2.7",
+    "sqlite3": "^4.1.1"
+  }
 }

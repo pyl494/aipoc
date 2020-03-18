@@ -1,2 +1,7 @@
-build/
-node_modules/
+*.iml
+*.idea
+.DS_Store
+node_modules
+*.pem
+store.db
+credentials.json

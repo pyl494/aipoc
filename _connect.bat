@@ -1,1 +1,1 @@
-npm run ngrok
+npm run ngrok http 3000

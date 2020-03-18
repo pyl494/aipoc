@@ -7,7 +7,7 @@
 
 Each time you make a change to the server, you need to manually close the previous instance of _start.bat and run _start.bat again.
 
-Currently this code is set up with TypeScript, rather than JavaScript. This could potentially help us as a group in detecting minor issues that could consume a lot of debugging time.
+~~Currently this code is set up with TypeScript, rather than JavaScript. This could potentially help us as a group in detecting minor issues that could consume a lot of debugging time.~~
 
 So, make your changes to 'index.ts' and then when you run _start.bat, the changes will be built into the 'build directory'
 
@@ -15,11 +15,17 @@ So, make your changes to 'index.ts' and then when you run _start.bat, the change
 
 # Connecting to the Atlassian Cloud:
 
-This step is not necessary unless you want to see what the app looks like while connected to Atlassian Cloud.
+To test on Atlassian cloud, you need to take the following steps.
 
 - Read from step 2: 
 https://developer.atlassian.com/cloud/jira/platform/getting-started/
 - Run _connect.bat. This connects the node server to the internet.
 - From the _connect.bat window, take the "https://<random>.ngrok.io" address
 - In Atlassian cloud "Upload App", enter: "https://<random>.ngrok.io/static/atlassian-connect.json"
+
+Changes to atlassian-connect.json will require a uninstall / re-uploading of the addon on Atlassian Cloud.
+
+# Overview
+
+At the moment, the code follows the Atlassian Connect Express template, which serves pages with the routes listed in routes/index.js and developed in views/. In this way, the front end stuff is all in the views/ files.
 
