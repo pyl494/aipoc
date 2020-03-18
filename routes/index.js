@@ -21,6 +21,12 @@ module.exports = function(app, addon) {
         });
     });
 
+    app.get('/jira-issues', addon.authenticate(), function(req, res) {
+        res.render('jira-issues', {
+            title: 'Jira Issues'
+        });
+    });
+
     app.get('/configure', addon.authenticate(), function(req, res) {
         res.render('configure', {
             title: 'Atlassian Connect'

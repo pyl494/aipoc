@@ -2,7 +2,7 @@
     "key": "my-app",
     "name": "My app",
     "description": "My very first app",
-    "baseUrl": "https://114b5f1f.ngrok.io",
+    "baseUrl": "https://b3967477.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -90,6 +90,19 @@
                 },
                 "key": "hello-world",
                 "url": "/hello-world",
+                "conditions": [
+                    {
+                        "condition": "user_is_logged_in"
+                    }
+                ]
+            },
+            {
+                "location": "system.top.navigation.bar",
+                "name": {
+                    "value": "Jira Issues"
+                },
+                "key": "jira-issues",
+                "url": "/jira-issues",
                 "conditions": [
                     {
                         "condition": "user_is_logged_in"
