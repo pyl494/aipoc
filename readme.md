@@ -7,10 +7,6 @@
 
 Each time you make a change to the server, you need to manually close the previous instance of _start.bat and run _start.bat again.
 
-~~Currently this code is set up with TypeScript, rather than JavaScript. This could potentially help us as a group in detecting minor issues that could consume a lot of debugging time.~~
-
-So, make your changes to 'index.ts' and then when you run _start.bat, the changes will be built into the 'build directory'
-
 ---
 
 # Connecting to the Atlassian Cloud:
