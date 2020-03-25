@@ -2,7 +2,7 @@
     "key": "my-app",
     "name": "My app",
     "description": "My very first app",
-    "baseUrl": "https://b3967477.ngrok.io",
+    "baseUrl": "https://<copy this from _connect.bat>.ngrok.io",
     "authentication": {
         "type": "jwt"
     },

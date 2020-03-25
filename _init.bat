@@ -1,2 +1,1 @@
-mkdir build
 npm install
