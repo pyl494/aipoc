@@ -27,6 +27,12 @@ module.exports = function(app, addon) {
         });
     });
 
+    app.get('/jira-issues-changelog', addon.authenticate(), function(req, res) {
+        res.render('jira-issues-changelog', {
+            title: 'Jira Issues Changelog'
+        });
+    });
+
     app.get('/jira-projects', addon.authenticate(), function(req, res) {
         res.render('jira-projects', {
             title: 'Jira Projects'

@@ -112,6 +112,19 @@
             {
                 "location": "system.top.navigation.bar",
                 "name": {
+                    "value": "Jira Issues Changelog"
+                },
+                "key": "jira-issues-changelog",
+                "url": "/jira-issues-changelog",
+                "conditions": [
+                    {
+                        "condition": "user_is_logged_in"
+                    }
+                ]
+            },
+            {
+                "location": "system.top.navigation.bar",
+                "name": {
                     "value": "Jira Project"
                 },
                 "key": "jira-projects",
