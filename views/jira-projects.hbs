@@ -1,0 +1,51 @@
+{{!< layout}}
+<header class="aui-page-header">
+  <div class="aui-page-header-inner">
+    <div class="aui-page-header-main intro-header">
+      <h1>Issues</h1>
+
+      <p class="subtitle">{{title}}</p>
+    </div>
+  </div>
+</header>
+
+<div class="aui-page-panel main-panel">
+  <div class="aui-page-panel-inner">
+    <section class="aui-page-panel-item">
+      <div class="aui-group">
+        <div class="aui-item">
+
+          <p class="issues hidden">
+            <code>
+            </code>
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    let jiraAPIBuilder = new APIBuilder();
+    jiraAPIBuilder.url = "/rest/api/2/project/search";
+    jiraAPIBuilder.parameters = {startAt:"0", maxResults: "100", orderBy:"category"};
+
+    let runner = new APIRunner(jiraAPIBuilder);
+    runner.success = function(data){
+      console.log("OK");
+        $(".issues code")
+          .empty()
+          .text(data)
+          .parent()
+          .removeClass("hidden");
+    };
+
+    runner.failure = function(xhr, textStatus, errorThrown){
+      console.log(errorThrown);
+    };
+
+    runner.run();
+  });
+
+</script>
