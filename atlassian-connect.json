@@ -134,6 +134,19 @@
                         "condition": "user_is_logged_in"
                     }
                 ]
+            },
+            {
+                "location": "system.top.navigation.bar",
+                "name": {
+                    "value": "Jira Project Properties"
+                },
+                "key": "jira-projects-properties",
+                "url": "/jira-projects-properties",
+                "conditions": [
+                    {
+                        "condition": "user_is_logged_in"
+                    }
+                ]
             }
         ],
         "adminPages": [

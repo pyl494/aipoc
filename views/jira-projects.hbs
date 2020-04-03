@@ -2,7 +2,7 @@
 <header class="aui-page-header">
   <div class="aui-page-header-inner">
     <div class="aui-page-header-main intro-header">
-      <h1>Issues</h1>
+      <h1>Projects</h1>
 
       <p class="subtitle">{{title}}</p>
     </div>
@@ -36,7 +36,7 @@
       console.log("OK");
         $(".issues code")
           .empty()
-          .text(data)
+          .text(JSON.stringify(data))
           .parent()
           .removeClass("hidden");
     };

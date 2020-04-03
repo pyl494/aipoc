@@ -19,14 +19,18 @@ var APIBuilder = function(){
 };
 
 var APIRunner = function(apibuilder){
-    this.apibuilder = apibuilder;
-    this.success = undefined;
-    this.failure = undefined;
-    this.run = function(){
-        this.apibuilder.build();
+    let self = this;
+    self.apibuilder = apibuilder;
+    self.success = undefined;
+    self.failure = undefined;
+    self.run = function(){
+        self.apibuilder.build();
         AP.request(apibuilder.builturl, {
-            error: this.failure,
-            success: this.success
+            error: self.failure,
+            success: function(data){
+                let jsonObject = JSON.parse(data);
+                self.success(jsonObject);
+            }
         });
     };
 };

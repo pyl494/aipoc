@@ -32,10 +32,7 @@
     jiraIssuesAPIBuilder.parameters = {qul:"", fields: "*all"};
 
     let runner = new APIRunner(jiraIssuesAPIBuilder);
-    runner.success = function(data){
-
-      let issues = JSON.parse(data);
-      
+    runner.success = function(issues){
       // we are just going to query the first issue for its change log
       if (issues.total > 0)
       {
@@ -51,7 +48,7 @@
           console.log("OK");
           $(".issues code")
             .empty()
-            .text(data)
+            .text(JSON.stringify(data))
             .parent()
             .removeClass("hidden");
         };

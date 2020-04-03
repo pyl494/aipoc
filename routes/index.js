@@ -38,6 +38,11 @@ module.exports = function(app, addon) {
             title: 'Jira Projects'
         });
     });
+    app.get('/jira-projects-properties', addon.authenticate(), function(req, res) {
+        res.render('jira-projects-properties', {
+            title: 'Jira Projects Properties'
+        });
+    });
 
     app.get('/configure', addon.authenticate(), function(req, res) {
         res.render('configure', {
