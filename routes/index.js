@@ -33,6 +33,12 @@ module.exports = function(app, addon) {
         });
     });
 
+    app.get('/jira-issues-worklogs', addon.authenticate(), function(req, res) {
+        res.render('jira-issues-worklogs', {
+            title: 'Jira Issues Worklogs'
+        });
+    });
+
     app.get('/jira-projects', addon.authenticate(), function(req, res) {
         res.render('jira-projects', {
             title: 'Jira Projects'

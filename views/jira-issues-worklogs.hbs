@@ -1,0 +1,71 @@
+{{!< layout}}
+<header class="aui-page-header">
+  <div class="aui-page-header-inner">
+    <div class="aui-page-header-main intro-header">
+      <h1>Worklogs</h1>
+
+      <p class="subtitle">{{title}}</p>
+    </div>
+  </div>
+</header>
+
+<div class="aui-page-panel main-panel">
+  <div class="aui-page-panel-inner">
+    <section class="aui-page-panel-item">
+      <div class="aui-group">
+        <div class="aui-item">
+
+          <p class="issues hidden">
+            <code>
+            </code>
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    let jiraIssuesAPIBuilder = new APIBuilder();
+    jiraIssuesAPIBuilder.url = "/rest/api/3/search";
+    jiraIssuesAPIBuilder.parameters = {qul:"", fields: "*all"};
+
+    let runner = new APIRunner(jiraIssuesAPIBuilder);
+    runner.success = function(issues){
+      // we are just going to query the first issue for its worklogs
+      if (issues.total > 0)
+      {
+        let issue = issues.issues[0];
+
+        let worklogsAPIBuilder = new APIBuilder();
+        worklogsAPIBuilder.url = `/rest/api/2/issue/${issue.id}/changelog`;
+        worklogsAPIBuilder.parameters = {startAt: 0, maxResults: 100};
+
+        let runner = new APIRunner(worklogsAPIBuilder);
+
+        runner.success = function(data){
+          console.log("OK");
+          $(".issues code")
+            .empty()
+            .text(JSON.stringify(data))
+            .parent()
+            .removeClass("hidden");
+        };
+
+        runner.failure = function(xhr, textStatus, errorThrown){
+          console.log(errorThrown);
+        };
+
+        runner.run();
+      }
+    };
+
+    runner.failure = function(xhr, textStatus, errorThrown){
+      console.log(errorThrown);
+    };
+
+    runner.run();
+  });
+
+</script>

@@ -109,6 +109,19 @@
                     }
                 ]
             },
+			{
+                "location": "system.top.navigation.bar",
+                "name": {
+                    "value": "Jira Issue Worklogs"
+                },
+                "key": "jira-issues-worklogs",
+                "url": "/jira-issues-worklogs",
+                "conditions": [
+                    {
+                        "condition": "user_is_logged_in"
+                    }
+                ]
+            },
             {
                 "location": "system.top.navigation.bar",
                 "name": {
