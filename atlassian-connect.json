@@ -2,7 +2,7 @@
     "key": "my-app",
     "name": "My app",
     "description": "My very first app",
-    "baseUrl": "https://<copy this from _connect.bat>.ngrok.io",
+    "baseUrl": "https://a11d2291.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -17,6 +17,29 @@
         "postUpdateUrl": "/hello-world"
     },
     "modules": {
+        "jiraIssueGlances": [
+            {
+              "icon": {
+                "width": 0,
+                "height": 0,
+                "url": "my_icon.svg"
+              },
+              "content": {
+                "type": "label",
+                "label": {
+                  "value": "my label"
+                }
+              },
+              "target": {
+                "type": "web_panel",
+                "url": "/panel_url"
+              },
+              "name": {
+                "value": "My Issue Glance "
+              },
+              "key": "my-issue-glance"
+            }
+          ],
         "webItems": [
             {
                 "name": {
