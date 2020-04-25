@@ -2,7 +2,7 @@
     "key": "my-app",
     "name": "My app",
     "description": "My very first app",
-    "baseUrl": "https://a11d2291.ngrok.io",
+    "baseUrl": "https://6f7ad697.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -19,6 +19,21 @@
     "modules": {
         "jiraIssueGlances": [
             {
+              "conditions": [
+                {
+                    "condition": "user_is_logged_in"
+                },
+                {
+                    "condition": "servicedesk.is_agent"
+                },
+                {
+                    "condition": "jira_expression",
+                    "params": {
+                        "expression": "issue.issueType.name.toLowerCase().includes('change')"
+                    }
+                    
+                }
+              ],
               "icon": {
                 "width": 0,
                 "height": 0,
