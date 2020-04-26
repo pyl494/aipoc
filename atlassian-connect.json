@@ -2,7 +2,7 @@
     "key": "my-app",
     "name": "My app",
     "description": "My very first app",
-    "baseUrl": "https://6f7ad697.ngrok.io",
+    "baseUrl": "https://3b7edde3.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -42,12 +42,12 @@
               "content": {
                 "type": "label",
                 "label": {
-                  "value": "my label"
+                  "value": "View"
                 }
               },
               "target": {
                 "type": "web_panel",
-                "url": "/panel_url"
+                "url": "/issue-glance-panel?issueKey={issue.key}"
               },
               "name": {
                 "value": "My Issue Glance "
@@ -66,8 +66,7 @@
                 "tooltip": {
                     "value": "My JIRA Connect Add-on",
                     "i18n": "foo.bar"
-                },
-                "key": "my-dropdown"
+                }
             },
             {
                 "name": { "value": "A: First item" },
@@ -118,6 +117,18 @@
                 "location": "atl.jira.view.issue.right.context",
                 "key": "issue-panel-1",
                 "url": "/hello-world"
+            },
+            {
+                "name": {
+                    "value": "Change Management Risk Assessment"
+                },
+                "url": "/issue-glance-panel",
+                "location": "atl.jira.view.issue.right.context",
+                "layout": {
+                    "width": "100%",
+                    "height": "100%"
+                },
+                "key": "issue-glance-panel"
             }
         ],
         "generalPages": [

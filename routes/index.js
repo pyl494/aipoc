@@ -21,6 +21,37 @@ module.exports = function(app, addon) {
         });
     });
 
+    app.get('/issue-glance-panel', addon.authenticate(), function(req, res) {
+        res.render('issue-glance-panel', {
+            title: "Change Risk Assessment"
+        });
+    });
+
+    app.get('/get-issue-data', addon.authenticate(), function(req, res) {
+        //'/rest/api/3/issue/{issueIdOrKey}'
+        var issueKey = req.param('issueKey');
+        var httpClient = addon.httpClient(req);
+
+        httpClient.get({
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "url": "/rest/api/3/issue/" + issueKey
+            },
+            function(err, response, body) {
+                if (err) { 
+                console.log(response.statusCode + ": " + err);
+                res.send("Error: " + response.statusCode + ": " + err);
+                }
+                else {
+                    console.log(response.statusCode, body);
+                    res.send(body);
+                }
+            }
+        );
+    });
+
     app.get('/jira-issues', addon.authenticate(), function(req, res) {
         res.render('jira-issues', {
             title: 'Jira Issues'

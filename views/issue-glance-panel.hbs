@@ -1,0 +1,40 @@
+{{!< layout}}
+<script src="{{baseUrl}}/js/issueglance.js"></script>
+<header class="aui-page-header">
+  <div class="aui-page-header-inner">
+    <div class="aui-page-header-main intro-header">
+      <h1>Change Risk Management Assessment</h1>
+    </div>
+  </div>
+</header>
+
+<div class="aui-page-panel main-panel">
+  <div class="aui-page-panel-inner">
+    <section class="aui-page-panel-item">
+      <div class="aui-group">
+        <div class="aui-item">
+          <button class="aui-button aui-button-primary" id="say-hello-button">Say Hello!</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  AJS.$(document).on('click', '#say-hello-button', function() {
+    var that = this;
+
+      $.ajax("/get-issue-data?jwt={{token}}&issueKey=" + get("issueKey"), {
+        "error": function (xhr, textStatus, errorThrown) {
+            //console.log(arguments);
+
+            //setAddonData("Could not retrieve addon data: " + textStatus + " – " + errorThrown);
+        },
+        "success": function (data) {
+            console.log("success");
+        }
+      });
+      e.preventDefault();
+      return false;
+    
+});
+</script>

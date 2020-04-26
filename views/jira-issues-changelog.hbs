@@ -39,7 +39,7 @@
         let issue = issues.issues[0];
 
         let changelogAPIBuilder = new APIBuilder();
-        changelogAPIBuilder.url = `/rest/api/2/issue/${issue.id}/changelog`;
+        changelogAPIBuilder.url = `/rest/api/2/issue/${issue.id}/worklog`;
         changelogAPIBuilder.parameters = {startAt: 0, maxResults: 100};
 
         let runner = new APIRunner(changelogAPIBuilder);
