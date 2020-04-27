@@ -14,6 +14,8 @@
       <div class="aui-group">
         <div class="aui-item">
           <button class="aui-button aui-button-primary" id="say-hello-button">Say Hello!</button>
+          </br>
+          <span id="helloTarget"></span>
       </div>
     </section>
   </div>
@@ -31,9 +33,16 @@
         },
         "success": function (data) {
             console.log("success");
+            console.log(typeof(data));
+            var parseData = JSON.parse(data);
+            var nameOf = parseData.fields.summary;
+            var issueType = parseData.fields.issuetype.name;
+            var issueTypeId = parseData.fields.issuetype.id;
+            var projectName = parseData.fields.project.name;
+
+            $("#helloTarget")[0].innerHTML = "Name: " + nameOf + "</br></br>Issue Type: " + issueType + "</br></br>Issue Type ID: " + issueTypeId + "</br></br>Project Name: " + projectName;
         }
       });
-      e.preventDefault();
       return false;
     
 });
