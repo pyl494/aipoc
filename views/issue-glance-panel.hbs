@@ -1,21 +1,10 @@
-{{!< layout}}
+{{!< panel-layout}}
 <script src="{{baseUrl}}/js/issueglance.js"></script>
-
-<section class="aui-page-panel-item">
-  <div class="aui-group">
-    <div class="aui-item">
-      <button class="aui-button aui-button-primary" id="say-hello-button">Grab Issue Details</button>
-      </br>
-      </br>
-      <span id="helloTarget"></span>
-  </div>
-</section>
+<div id="crmt-content-generate"><aui-spinner></aui-spinner></div>
 
 <script>
-  AJS.$(document).on('click', '#say-hello-button', function() {
-    var that = this;
-
-      $.ajax("/get-issue-data?jwt={{token}}&issueKey=" + get("issueKey"), {
+  AP.events.on('ISSUE_GLANCE_OPENED', function() {
+    $.ajax("/get-issue-data?jwt={{token}}&issueKey=" + get("issueKey"), {
         "error": function (xhr, textStatus, errorThrown) {
             //console.log(arguments);
 
@@ -23,17 +12,52 @@
         },
         "success": function (data) {
             console.log("success");
-            console.log(typeof(data));
+            console.log(data);
             var parseData = JSON.parse(data);
-            var nameOf = parseData.fields.summary;
-            var issueType = parseData.fields.issuetype.name;
-            var issueTypeId = parseData.fields.issuetype.id;
-            var projectName = parseData.fields.project.name;
+            
+            var issueID = parseData.id;
+            var issueName = parseData.name;
+            var projectName = parseData.projectName;
+            var issuetypeName = parseData.issueTypeName;
+            var linkedIssues = parseData.linked;
+            var riskFactor = parseData.riskFactor;
 
-            $("#helloTarget")[0].innerHTML = "Name: " + nameOf + "</br></br>Issue Type: " + issueType + "</br></br>Issue Type ID: " + issueTypeId + "</br></br>Project Name: " + projectName;
+            var riskFactorLine = "";
+            var url = "";
+            var riskDesc = "";
+            if (riskFactor < 5) {
+              url = "{{baseUrl}}/green-triangle.png";
+              riskDesc = "Low Risk";
+            }
+            else if (riskFactor < 10) {
+              url = "{{baseUrl}}/orange-triangle.png";
+              riskDesc = "Medium Risk";
+            }
+            else {
+              url = "{{baseUrl}}/red-triangle.png";
+              riskDesc = "High Risk";
+            }
+
+            riskFactorLine = '<img src="' + url + '" alt="Risk Icon" height="42" width="42" style="vertical-align:middle"> <span>' + riskDesc + "</span";
+
+            var generateHTML = "<h3>" + + issueID + " - " + issueName + "</h3>";
+            generateHTML= generateHTML + "<p>Type: " + issuetypeName + "</p>";
+            generateHTML = generateHTML + "<p>Project: " + projectName + "</p>";
+            if (linkedIssues.length > 0) {
+              generateHTML = generateHTML + "<h4> Linked Issues </h4> <ul>";
+              for (let i = 0; i < linkedIssues.length; i++) {
+                generateHTML = generateHTML + "<li>" + linkedIssues[i].name + "</li>";
+              }
+              generateHTML = generateHTML + "</ul>";
+            }
+
+
+            generateHTML = generateHTML + "</br>" + riskFactorLine;
+
+
+
+            $("#crmt-content-generate")[0].innerHTML = generateHTML;
         }
       });
-      return false;
-    
-});
+  });
 </script>

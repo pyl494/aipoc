@@ -45,8 +45,35 @@ module.exports = function(app, addon) {
                 res.send("Error: " + response.statusCode + ": " + err);
                 }
                 else {
-                    console.log(response.statusCode, body);
-                    res.send(body);
+                    
+                    // Process stuff.
+                    
+                    var jsonData = body;
+                    var issueObject = JSON.parse(jsonData);
+                    var sendObject = { };
+
+                    sendObject.id = issueObject.id;
+                    sendObject.name = issueObject.fields.summary;
+                    sendObject.projectName = issueObject.fields.project.name;
+                    sendObject.issueTypeName = issueObject.fields.issuetype.name;
+                    sendObject.linked = [];
+                    sendObject.riskFactor = Math.abs(-5 + issueObject.fields.issuelinks.length); // Higher = worses
+
+                    for(let i = 0; i < issueObject.fields.issuelinks.length; i++) {
+
+                        var inwardIssue = issueObject.fields.issuelinks[i].inwardIssue;
+
+                        var linkedData = { };
+                        linkedData.id = inwardIssue.id;
+                        linkedData.name = inwardIssue.fields.summary;
+
+                        sendObject.linked.push(linkedData);
+                    }
+
+                    console.log(sendObject);
+
+
+                    res.send(JSON.stringify(sendObject));
                 }
             }
         );

@@ -2,7 +2,7 @@
     "key": "my-app",
     "name": "My app",
     "description": "My very first app",
-    "baseUrl": "https://3331eea1.ngrok.io",
+    "baseUrl": "https://207e34ce.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -42,7 +42,7 @@
               "content": {
                 "type": "label",
                 "label": {
-                  "value": "View"
+                  "value": "View Risk"
                 }
               },
               "target": {
@@ -50,7 +50,7 @@
                 "url": "/issue-glance-panel?issueKey={issue.key}"
               },
               "name": {
-                "value": "My Issue Glance "
+                "value": "Risk Management Assistant"
               },
               "key": "my-issue-glance"
             }

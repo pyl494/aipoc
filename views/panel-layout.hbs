@@ -15,10 +15,14 @@
   <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/aui/5.2/js/aui-ie.js"></script><![endif]-->
   <script src="{{hostScriptUrl}}" type="text/javascript"></script>
 </head>
-<body class="aui-page-hybrid">
-  <section id="content" role="main">
-    {{{body}}}
-  </section>
+<body>
+  <div>
+    <div class="aui-page-panel-inner">
+      <section class="aui-page-panel-content">
+        {{{body}}}
+      </section>
+    </div>
+  </div>
   <script src="{{baseUrl}}/js/addon.js"></script>
 </body>
 </html>
