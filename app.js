@@ -18,6 +18,7 @@ import ace from 'atlassian-connect-express';
 // https://npmjs.org/package/express-hbs
 // http://handlebarsjs.com
 import hbs from 'express-hbs';
+var expiry = require('static-expiry');
 
 // We also need a few stock Node modules
 import http from 'http';
@@ -70,6 +71,12 @@ app.use(addon.middleware());
 
 // Mount the static files directory
 const staticDir = path.join(__dirname, 'public');
+app.use(express.static(staticDir));
+
+app.use(expiry(app, {dir: staticDir, debug: devEnv}));
+// Add an hbs helper to fingerprint static resource urls
+hbs.registerHelper('furl', function(url){ return app.locals.furl(url); });
+// Mount the static resource dir
 app.use(express.static(staticDir));
 
 // Atlassian security policy requirements
