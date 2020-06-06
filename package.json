@@ -1,8 +1,9 @@
 {
-  "name": "my-app",
+  "name": "my-addon",
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "postinstall": "cd client; npm install",
     "start": "node -r esm app.js",
     "ngrok": "ngrok",
     "lint": "eslint app.js routes"
@@ -26,5 +27,9 @@
     "longjohn": "^0.2.12",
     "ngrok": "^3.2.7",
     "sqlite3": "^4.1.1"
-  }
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "client/node_modules"
+  ]
 }
