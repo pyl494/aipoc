@@ -1,63 +1,6 @@
-{{!< panel-layout}}
-<script src="{{baseUrl}}/js/issueglance.js"></script>
-<div id="crmt-content-generate"><aui-spinner></aui-spinner></div>
+{{!< layout}}
+<div id="app-root"></div>
 
 <script>
-  AP.events.on('ISSUE_GLANCE_OPENED', function() {
-    $.ajax("/get-issue-data?jwt={{token}}&issueKey=" + get("issueKey"), {
-        "error": function (xhr, textStatus, errorThrown) {
-            //console.log(arguments);
-
-            //setAddonData("Could not retrieve addon data: " + textStatus + " – " + errorThrown);
-        },
-        "success": function (data) {
-            console.log("success");
-            console.log(data);
-            var parseData = JSON.parse(data);
-            
-            var issueID = parseData.id;
-            var issueName = parseData.name;
-            var projectName = parseData.projectName;
-            var issuetypeName = parseData.issueTypeName;
-            var linkedIssues = parseData.linked;
-            var riskFactor = parseData.riskFactor;
-
-            var riskFactorLine = "";
-            var url = "";
-            var riskDesc = "";
-            if (riskFactor < 5) {
-              url = "{{baseUrl}}/green-triangle.png";
-              riskDesc = "Low Risk";
-            }
-            else if (riskFactor < 10) {
-              url = "{{baseUrl}}/orange-triangle.png";
-              riskDesc = "Medium Risk";
-            }
-            else {
-              url = "{{baseUrl}}/red-triangle.png";
-              riskDesc = "High Risk";
-            }
-
-            riskFactorLine = '<img src="' + url + '" alt="Risk Icon" height="42" width="42" style="vertical-align:middle"> <span>' + riskDesc + "</span";
-
-            var generateHTML = "<h3>" + + issueID + " - " + issueName + "</h3>";
-            generateHTML= generateHTML + "<p>Type: " + issuetypeName + "</p>";
-            generateHTML = generateHTML + "<p>Project: " + projectName + "</p>";
-            if (linkedIssues.length > 0) {
-              generateHTML = generateHTML + "<h4> Linked Issues </h4> <ul>";
-              for (let i = 0; i < linkedIssues.length; i++) {
-                generateHTML = generateHTML + "<li>" + linkedIssues[i].name + "</li>";
-              }
-              generateHTML = generateHTML + "</ul>";
-            }
-
-
-            generateHTML = generateHTML + "</br>" + riskFactorLine;
-
-
-
-            $("#crmt-content-generate")[0].innerHTML = generateHTML;
-        }
-      });
-  });
+	addon.render();
 </script>

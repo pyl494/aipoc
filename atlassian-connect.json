@@ -1,8 +1,8 @@
 {
-    "key": "my-app",
-    "name": "My app",
-    "description": "My very first app",
-    "baseUrl": "https://22774348a440.ngrok.io",
+    "key": "risk-evader-app",
+    "name": "RiskEvader",
+    "description": "",
+    "baseUrl": "https://607d6eebd2d5.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -54,70 +54,8 @@
               },
               "key": "my-issue-glance"
             }
-          ],
-        "webItems": [
-            {
-                "name": {
-                    "value": "My dropdown"
-                },
-                "location": "system.top.navigation.bar",
-                "url": "/hello-world",
-                "key": "dropdown",
-                "tooltip": {
-                    "value": "My JIRA Connect Add-on",
-                    "i18n": "foo.bar"
-                }
-            },
-            {
-                "name": { "value": "A: First item" },
-                "url": "/hello-world",
-                "key": "dropdown-1-1",
-                "location": "my-dropdown/dropdown-section-1",
-                "weight": 1
-            },
-            {
-                "name": { "value": "A: Second item" },
-                "url": "/hello-world",
-                "key": "dropdown-1-2",
-                "location": "my-dropdown/dropdown-section-1",
-                "weight": 2
-            },
-            {
-                "name": { "value": "B: First item" },
-                "url": "/hello-world",
-                "key": "dropdown-2-1",
-                "location": "my-dropdown/dropdown-section-2",
-                "weight": 1
-            },
-            {
-                "name": { "value": "B: Second item" },
-                "url": "/hello-world",
-                "key": "dropdown-2-2",
-                "location": "my-dropdown/dropdown-section-2",
-                "weight": 2
-            }
-        ],
-        "webSections": [
-            {
-                "name": { "value": "Section A" },
-                "location": "my-dropdown",
-                "key": "dropdown-section-1"
-            },
-            {
-                "name": { "value": "Section B" },
-                "location": "my-dropdown",
-                "key": "dropdown-section-2"
-            }
-        ],
+		  ],
         "webPanels": [
-            {
-                "name": {
-                    "value": "Project Banner"
-                },
-                "location": "atl.jira.view.issue.right.context",
-                "key": "issue-panel-1",
-                "url": "/hello-world"
-            },
             {
                 "name": {
                     "value": "Change Management Risk Assessment"
@@ -132,96 +70,12 @@
             }
         ],
         "generalPages": [
-            {
-                "location": "system.top.navigation.bar",
-                "name": {
-                    "value": "Hello World Webitem"
-                },
-                "key": "hello-world",
-                "url": "/hello-world",
-                "conditions": [
-                    {
-                        "condition": "user_is_logged_in"
-                    }
-                ]
-            },
-            {
-                "location": "system.top.navigation.bar",
-                "name": {
-                    "value": "Jira Issues"
-                },
-                "key": "jira-issues",
-                "url": "/jira-issues",
-                "conditions": [
-                    {
-                        "condition": "user_is_logged_in"
-                    }
-                ]
-            },
-			{
-                "location": "system.top.navigation.bar",
-                "name": {
-                    "value": "Jira Issue Worklogs"
-                },
-                "key": "jira-issues-worklogs",
-                "url": "/jira-issues-worklogs",
-                "conditions": [
-                    {
-                        "condition": "user_is_logged_in"
-                    }
-                ]
-            },
-            {
-                "location": "system.top.navigation.bar",
-                "name": {
-                    "value": "Jira Issues Changelog"
-                },
-                "key": "jira-issues-changelog",
-                "url": "/jira-issues-changelog",
-                "conditions": [
-                    {
-                        "condition": "user_is_logged_in"
-                    }
-                ]
-            },
-            {
-                "location": "system.top.navigation.bar",
-                "name": {
-                    "value": "Jira Project"
-                },
-                "key": "jira-projects",
-                "url": "/jira-projects",
-                "conditions": [
-                    {
-                        "condition": "user_is_logged_in"
-                    }
-                ]
-            },
-            {
-                "location": "system.top.navigation.bar",
-                "name": {
-                    "value": "Jira Project Properties"
-                },
-                "key": "jira-projects-properties",
-                "url": "/jira-projects-properties",
-                "conditions": [
-                    {
-                        "condition": "user_is_logged_in"
-                    }
-                ]
-            }
         ],
         "adminPages": [
-            {
-                "name": {
-                    "value": "Config Admin Page"
-                },
-                "url": "/hello-world",
-                "key": "admin"
-            }
+           
         ],
         "configurePage": {
-            "name": { 
+			"name": { 
                 "value": "Add-on Configuration"
             },
             "key": "configure",
@@ -229,51 +83,16 @@
             "location": "system.admin/globalsettings"
         },
         "jiraProjectAdminTabPanels": [
-            {
-                "location": "projectgroup4",
-                "key": "project-admin-tab",
-                "url": "/hello-world?xox=test&width=&height=})},alert(0));x({k:x({x:{//",
-                "weight": 100,
-                "name": {
-                   "value": "Admin Panel"
-                }
-            }
+
         ],
         "jiraProfileTabPanels": [
-            {
-                "key": "profile-tab",
-                "url": "/profile-tab?profileUserKey={profileUser.key}&profileUserName={profileUser.name}",
-                "name": {
-                   "value": "Add-on Profile Tab"
-                }
-            }
+
         ],
         "jiraSearchRequestViews": [
-            {
-              "url": "/search-view",
-              "key": "search-view",
-              "weight": 100,
-              "description": {
-                  "value": "Example search request view"
-              },
-              "name": {
-                  "value": "My Search View",
-                  "i18n": "my.search.view"
-              }
-            }
+
         ],
-        "webhooks": [{
-            "event": "jira:issue_created",
-            "url": "/created?type=bug",
-            "params": {
-                "filter": "type = Bug"
-            }
-        },{
-            "event": "jira:issue_created",
-            "url": "/created",
-            "params": {
-                "filter": "asdfij13039"
-            }
-        }]
+        "webhooks": [
+
+        ]
     }
 }
