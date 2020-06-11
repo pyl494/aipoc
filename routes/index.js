@@ -25,6 +25,10 @@ module.exports = function (app, addon) {
             });
         }
 	);
+
+	app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {
+		res.send("Something from the server I guess!");
+	});
 	
 	app.get('/get-issue-data', addon.authenticate(), function(req, res) {
         //'/rest/api/3/issue/{issueIdOrKey}'
