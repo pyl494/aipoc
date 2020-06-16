@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 module.exports = function (app, addon) {
 
     // Root route. This route will serve the `atlassian-connect.json` unless the
@@ -19,14 +21,49 @@ module.exports = function (app, addon) {
     // This is an example route that's used by the default "generalPage" module.
     // Verify that the incoming request is authenticated with Atlassian Connect
     app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
-            res.render('issue-glance-panel', {
-                title: 'Atlassian Connect'
-                //issueId: req.query['issueId']
-            });
-        }
-	);
+		// = = = = = 
+		//
+		//
+		var assignee_stats = [
+			{ assignee: 'bob29', issuenum: 3, delays: 12 },
+			{ assignee: 'hd125', issuenum: 6, delays: 1 },
+			{ assignee: 'steve', issuenum: 4, delays: 0 }
+		];
+
+		var project = req.query.project;
+		var issue_id = req.query.issue;
+
+		var t_URL = `http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`
+
+		axios.post(t_URL, {
+		}).then((resp) => {
+
+			console.log(resp.data)
+
+
+		}).catch((error) => {
+
+			console.error(error)
+
+
+		}).finally(() => {
+
+
+			res.render('issue-glance-panel', {
+				title: 'Atlassian Connect',
+				assignee_stats: JSON.stringify(assignee_stats)
+				//issueId: req.query['issueId']
+			});
+
+
+		})
+
+
+
+	});
 
 	app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {
+
 		res.send("Something from the server I guess!");
 	});
 	

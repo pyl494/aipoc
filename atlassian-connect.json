@@ -2,7 +2,7 @@
     "key": "risk-evader-app",
     "name": "RiskEvader",
     "description": "",
-    "baseUrl": "https://548e904f2f42.ngrok.io",
+    "baseUrl": "https://57920bafbdeb.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -47,7 +47,7 @@
               },
               "target": {
                 "type": "web_panel",
-                "url": "/issue-glance-panel?issueKey={issue.key}"
+                "url": "/issue-glance-panel?issueKey={issue.key}&project={project.key}"
               },
               "name": {
                 "value": "Risk Management Assistant"

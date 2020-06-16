@@ -24,6 +24,7 @@
     "@atlaskit/page": "^5.0.14",
     "@atlaskit/section-message": "^4.1.9",
     "@atlaskit/select": "^11.0.12",
+    "@atlaskit/tabs": "^11.2.11",
     "@atlaskit/theme": "^2.3.4",
     "prop-types": "^15.6.0",
     "react": "^16.13.1",
