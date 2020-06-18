@@ -6,6 +6,7 @@
 	var jwt_token = "{{token}}";
 	var assignee_stat = "{{assignee_stats}}";
 	assignee_stat = JSON.parse(assignee_stat.replace(/&quot;/g,'"'));
+	var evaluation_setting = "{{evaluation_setting}}"
 	console.log(assignee_stat);
 	console.log(jwt_token);
 	addon.render();

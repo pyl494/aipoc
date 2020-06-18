@@ -1,4 +1,5 @@
 const axios = require('axios');
+const util = require('../util.js');
 
 module.exports = function (app, addon) {
 
@@ -16,7 +17,25 @@ module.exports = function (app, addon) {
                 res.redirect('/atlassian-connect.json');
             }
         });
-    });
+	});
+	
+	app.get('/issue-glance-test', function(req, res) {
+		var assignee_stats = [
+			{ assignee: 'bob29', issuenum: 3, delays: 12 },
+			{ assignee: 'hd125', issuenum: 6, delays: 1 },
+			{ assignee: 'steve', issuenum: 4, delays: 0 }
+		];
+
+		
+		res.render('issue-glance-panel', {
+			title: 'Atlassian Connect',
+			assignee_stats: JSON.stringify(assignee_stats)
+
+			//issueId: req.query['issueId']
+
+		});
+	});
+
 
     // This is an example route that's used by the default "generalPage" module.
     // Verify that the incoming request is authenticated with Atlassian Connect
@@ -29,11 +48,19 @@ module.exports = function (app, addon) {
 			{ assignee: 'hd125', issuenum: 6, delays: 1 },
 			{ assignee: 'steve', issuenum: 4, delays: 0 }
 		];
-
+		var data = util.get_all_issues_project(app, addon, req, res, req.query.project);
+		console.log(data);
 		var project = req.query.project;
 		var issue_id = req.query.issue;
+		var linked_issues = [];
 
-		var t_URL = `http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`
+
+		var t_URL = `http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`;
+		var issue_status = {
+			status: ""
+		}
+		var evaluation_setting = 'def-no-eval';
+
 
 		axios.post(t_URL, {
 		}).then((resp) => {
@@ -47,12 +74,14 @@ module.exports = function (app, addon) {
 
 
 		}).finally(() => {
-
+			// Render the page with hopefully any data that is necessary.
 
 			res.render('issue-glance-panel', {
 				title: 'Atlassian Connect',
-				assignee_stats: JSON.stringify(assignee_stats)
+				assignee_stats: JSON.stringify(assignee_stats),
+				evaluation_setting: evaluation_setting
 				//issueId: req.query['issueId']
+
 			});
 
 
@@ -63,8 +92,43 @@ module.exports = function (app, addon) {
 	});
 
 	app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {
+		var eval_set = req.query.type;
+		var issueid = req.query.issueid;
+		var project = req.query.project;
 
-		res.send("Something from the server I guess!");
+		var label = 'None';
+		if (eval_set == 'override-high') { label = 'high'; }
+		else if (eval_set == 'override-medium') { label = 'medium'; }
+		else if (eval_set == 'override-low') { label = 'low'; }
+		else if (eval_set == 'override-no-eval') { label = 'None'; }
+		else { var result = { status: "ok" }; res.send(JSON.stringify(result)); return; }
+
+		var t_URL = `http://localhost:8080/micro?type=override&project=${project}&version=1.2.3&label=${label}`;
+
+		axios.post(t_URL, {
+		}).then((resp) => {
+			var result = { status: '', reason: '' };
+			if (resp.body.result == 'Not Found') {
+				result.status = 'error';
+				result.reason = `${issueid} not found in ${project}`;
+				res.send(JSON.stringify(result));
+				return;
+			}
+
+
+
+		}).catch((error) => {
+			var result = { status: 'error', reason: 'Backend error.' };
+			console.error(error)
+			res.send(JSON.stringify(result));
+
+		}).finally(() => {
+
+
+		})
+
+
+		
 	});
 	
 	app.get('/get-issue-data', addon.authenticate(), function(req, res) {
