@@ -53,25 +53,32 @@ module.exports = function (app, addon) {
 		var linked_issues = [];
 		var evaluation_setting = 'def-no-eval';
 
+
+
 		//util async function to get all issues from a project
-		util.get_all_issues_project(app, addon, req, res, req.query.project).then((resp) => {
-			console.log(resp)
+		util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
+
+			for (var i = 0; i < issues_resp.length; i++) {
+				issues_resp[i].fields.fixVersions = { versionName: "1.2.3"};
+			}
+			
+			console.log(JSON.stringify(issues_resp));
+			
+
 			//axois post to add issue
 			axios({
 				method: 'post',
 				url: 'http://localhost:8080/micro?type=add',
 				headers: {},
 				data: {
-					issues: resp
+					issues: issues_resp
 				}
 
-			}).then((resp => {
-				console.log(resp)
+			}).then((add_resp => {
 				//make handshake
 				return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})
-			})).then((resp) => {
+			})).then((hs_resp) => {
 				//do something with response
-				console.log(resp)
 			}).finally(() => {
 				res.render('issue-glance-panel', {
 					title: 'Atlassian Connect',
