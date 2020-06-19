@@ -2,7 +2,7 @@
     "key": "risk-evader-app",
     "name": "RiskEvader",
     "description": "",
-    "baseUrl": "https://dba57afd94ab.ngrok.io",
+    "baseUrl": "https://b573d5a835d2.ngrok.io",
     "authentication": {
         "type": "jwt"
     },

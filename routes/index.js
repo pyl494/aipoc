@@ -61,7 +61,9 @@ module.exports = function (app, addon) {
 				method: 'post',
 				url: 'http://localhost:8080/micro?type=add',
 				headers: {},
-				data: "issues=" + JSON.stringify(resp)
+				data: {
+					issues: resp
+				}
 
 			}).then((resp => {
 				console.log(resp)
