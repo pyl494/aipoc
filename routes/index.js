@@ -40,21 +40,47 @@ module.exports = function (app, addon) {
     // This is an example route that's used by the default "generalPage" module.
     // Verify that the incoming request is authenticated with Atlassian Connect
     app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
-		// = = = = = 
-		//
-		//
+
 		var assignee_stats = [
 			{ assignee: 'bob29', issuenum: 3, delays: 12 },
 			{ assignee: 'hd125', issuenum: 6, delays: 1 },
 			{ assignee: 'steve', issuenum: 4, delays: 0 }
 		];
-		var data = util.get_all_issues_project(app, addon, req, res, req.query.project);
-		console.log(data);
+
+		//var data = util.get_all_issues_project(app, addon, req, res, req.query.project);
 		var project = req.query.project;
 		var issue_id = req.query.issue;
 		var linked_issues = [];
+		var evaluation_setting = 'def-no-eval';
 
+		//util async function to get all issues from a project
+		util.get_all_issues_project(app, addon, req, res, req.query.project).then((resp) => {
+			console.log(resp)
+			//axois post to add issue
+			axios({
+				method: 'post',
+				url: 'http://localhost:8080/micro?type=add',
+				headers: {},
+				data: "issues=" + JSON.stringify(resp)
 
+			}).then((resp => {
+				console.log(resp)
+				//make handshake
+				return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})
+			})).then((resp) => {
+				//do something with response
+				console.log(resp)
+			}).finally(() => {
+				res.render('issue-glance-panel', {
+					title: 'Atlassian Connect',
+					assignee_stats: JSON.stringify(assignee_stats),
+					evaluation_setting: evaluation_setting
+				});
+			})
+		})
+
+		
+		/*
 		var t_URL = `http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`;
 		var issue_status = {
 			status: ""
@@ -66,7 +92,8 @@ module.exports = function (app, addon) {
 		}).then((resp) => {
 
 			console.log(resp.data)
-
+			console.log("repsonse got")
+			console.log(resp)
 
 		}).catch((error) => {
 
@@ -75,7 +102,7 @@ module.exports = function (app, addon) {
 
 		}).finally(() => {
 			// Render the page with hopefully any data that is necessary.
-
+			
 			res.render('issue-glance-panel', {
 				title: 'Atlassian Connect',
 				assignee_stats: JSON.stringify(assignee_stats),
@@ -86,7 +113,7 @@ module.exports = function (app, addon) {
 
 
 		})
-
+		*/
 
 
 	});
