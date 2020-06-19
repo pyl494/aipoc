@@ -59,11 +59,8 @@ module.exports = function (app, addon) {
 		util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
 
 			for (var i = 0; i < issues_resp.length; i++) {
-				issues_resp[i].fields.fixVersions = { versionName: "1.2.3"};
+				issues_resp[i].fields.fixVersions = [ { name: "1.2.3"} ];
 			}
-			
-			console.log(JSON.stringify(issues_resp));
-			
 
 			//axois post to add issue
 			axios({
