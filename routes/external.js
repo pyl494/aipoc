@@ -6,7 +6,7 @@ const util = require('../util.js');
 const fs = require('fs');
 const path = require('path');
 
-// Root route. This route will serve the `atlassian-connect.json` unless the
+ // Root route. This route will serve the `atlassian-connect.json` unless the
 // documentation url inside `atlassian-connect.json` is set
 app.get('/', function (req, res) {
     res.format({
@@ -55,6 +55,8 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
     var issue_id = req.query.issue;
     var linked_issues = [];
     var evaluation_setting = 'def-no-eval';
+
+
 
 
 
@@ -144,15 +146,15 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
     axios.post(t_URL, {
     }).then((resp) => {
         var result = { status: '', reason: '' };
-        if (resp.body.result == 'Not Found') {
+        if (resp.data.result == 'Not Found') {
             result.status = 'error';
             result.reason = `${issueid} not found in ${project}`;
             res.send(JSON.stringify(result));
             return;
         }
+        else {
 
-
-
+        }
     }).catch((error) => {
         var result = { status: 'error', reason: 'Backend error.' };
         console.error(error)
@@ -161,7 +163,7 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
     }).finally(() => {
 
 
-    })
+    });
 
 
     

@@ -2,9 +2,9 @@
 
 export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 	var issue_and_linked = [];
-	
-	
+
 	var httpClient = addon.httpClient(req);
+	
 	await new Promise((resolve, reject) => { 
 		httpClient.get({
 			"headers": {
@@ -27,7 +27,7 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 			}
 		});
 	}).then(() => {
-		await new Promise((resolve, reject) => { 
+		new Promise((resolve, reject) => { 
 			httpClient.get({
 				"headers": {
 					"Content-Type": "application/json",
@@ -53,8 +53,7 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 			});
 		});
 	});
-
-
+	
 	return issue_and_linked;
 }
 
