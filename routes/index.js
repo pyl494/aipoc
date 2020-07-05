@@ -55,6 +55,8 @@ module.exports = function (app, addon) {
 
 
 
+
+
 		//util async function to get all issues from a project
 		util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
 
@@ -141,15 +143,15 @@ module.exports = function (app, addon) {
 		axios.post(t_URL, {
 		}).then((resp) => {
 			var result = { status: '', reason: '' };
-			if (resp.body.result == 'Not Found') {
+			if (resp.data.result == 'Not Found') {
 				result.status = 'error';
 				result.reason = `${issueid} not found in ${project}`;
 				res.send(JSON.stringify(result));
 				return;
 			}
+			else {
 
-
-
+			}
 		}).catch((error) => {
 			var result = { status: 'error', reason: 'Backend error.' };
 			console.error(error)
@@ -158,7 +160,7 @@ module.exports = function (app, addon) {
 		}).finally(() => {
 
 
-		})
+		});
 
 
 		

@@ -7,3 +7,4 @@ store.db
 *.log
 credentials.json
 *addon.js
+public/js/addon.js

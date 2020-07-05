@@ -1,4 +1,5 @@
 {{!< layout}}
+<script src="/js/issueglance.js"></script>
 <body>
 <div id="app-root"></div>
 </body>
@@ -9,5 +10,5 @@
 	var evaluation_setting = "{{evaluation_setting}}"
 	console.log(assignee_stat);
 	console.log(jwt_token);
-	addon.render();
+	get_stored_status(render_from_status);
 </script>

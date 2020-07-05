@@ -7,30 +7,7 @@ import Select from '@atlaskit/select';
 import SectionMessage from '@atlaskit/section-message';
 import QuestionCircleIcon from '@atlaskit/icon/glyph/question-circle';
 import AssigneeStatistics from '../components/AssigneStatistics';
-
-const GROUP_OPTIONS = [
-  {
-    label: 'Machine Learning',
-    options: [
-	  { label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval' },
-	  { label: 'No Current Evaluation', value: 'def-no-eval' }
-    ],
-  },
-  {
-    label: 'Manual Overrides',
-    options: [
-	  { label: 'Override: High Risk', value: 'override-high' },
-	  { label: 'Override: Medium Risk', value: 'override-medium' },
-	  { label: 'Override: Low Risk', value: 'override-low' },
-	  { label: 'Don\'t Evaluate', value: 'override-no-eval' },
-    ],
-  },
-];
-
-
-
-
-
+import EvaluationSelect from '../components/EvaluationSelect.js';
 
 export default class IssueGlancePanel extends Component {
 	constructor(props) {
@@ -65,26 +42,8 @@ export default class IssueGlancePanel extends Component {
 		
 		};
 		
-		this.handleChange = this.handleChange.bind(this);
 	}
 	
-	
-
-	handleChange(obj) {
-		var handle = JSON.parse(JSON.stringify(obj)); // This is to extract the object.
-		var panel = this;
-		$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&project=" + get("project") + "&issueKey=" + get("issueKey") + "&type=" + handle.value.value, {
-			"error": function (xhr, textStatus, errorThrown) {
-
-			},
-			"success": function (data) {
-				console.log(data);
-				panel.setState({msg: data});
-			}
-		});
-
-		this.setState(obj);
-	}
 	
   render() {
     return (
@@ -94,9 +53,8 @@ export default class IssueGlancePanel extends Component {
 			<Lozenge appearance="removed" isBold>High Risk</Lozenge>
 			<br/>
 			<br/>
-			<Select options={GROUP_OPTIONS} value={this.state.value} onChange={value => this.handleChange({ value })}>
-				
-			</Select>
+			<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
+
 			<p>{this.state.msg}</p>
 
 			<br/>			
