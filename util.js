@@ -68,7 +68,7 @@ export async function get_all_issues_project(app, addon, req, res, project_key) 
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			"url": "/rest/api/3/search?jql=project" + encodeURI(" = " + project_key) + "&maxResults=999999"
+			"url": "/rest/api/3/search?jql=project" + encodeURI(" = " + project_key) + "&maxResults=999999&fields=*all&expand=names"+ encodeURI(" , " + project_key) +"changelog"
 		},
 		function(err, response, body) {
 			if (err) { 

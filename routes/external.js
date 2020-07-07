@@ -78,9 +78,10 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 
         }).then((add_resp => {
             //make handshake
-            return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})
+            //return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})
         })).then((hs_resp) => {
             //do something with response
+            //console.log(hs_resp);
         }).finally(() => {
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
