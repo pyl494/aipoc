@@ -4,14 +4,16 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 	var issue_and_linked = [];
 
 	var httpClient = addon.httpClient(req);
-	
+
+	console.log("/rest/api/3/search?jql=" + encodeURI(`issueKey = ${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names");
+
 	await new Promise((resolve, reject) => { 
 		httpClient.get({
 			"headers": {
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			"url": "/rest/api/3/issue/" + issueKey
+			"url": "/rest/api/3/search?jql=" + encodeURI(`issueKey = ${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names"
 		},
 		function(err, response, body) {
 			if (err) { 
@@ -20,41 +22,14 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 				resolve();
 			}
 			else {
-				var issue_object = JSON.parse(body);
-				result.main = issue_object;
-				issue_and_linked.push(issue_object);
-
+				issue_and_linked = JSON.parse(body);
+				resolve();
 			}
 		});
-	}).then(() => {
-		new Promise((resolve, reject) => { 
-			httpClient.get({
-				"headers": {
-					"Content-Type": "application/json",
-					"Accept": "application/json"
-				},
-				"url": "/rest/api/3/search?jql=" + encodeURI(`issue in linkedIssues(${issueKey})`)
-			},
-			function(err, response, body) {
-				if (err) { 
-					console.log(response.statusCode + ": " + err);
-					res.send("Error: " + response.statusCode + ": " + err);
-					resolve();
-				}
-				else {
-					var issues = JSON.parse(body);
-
-					for (var i = 0; i != issues.length; i++) {
-						issue_and_linked.push(issues[i]);
-					}
-					resolve();
-
-				}
-			});
-		});
 	});
-	
+
 	return issue_and_linked;
+	
 }
 
 
@@ -68,7 +43,7 @@ export async function get_all_issues_project(app, addon, req, res, project_key) 
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			"url": "/rest/api/3/search?jql=project" + encodeURI(" = " + project_key) + "&maxResults=999999&fields=*all&expand=names"+ encodeURI(" , " + project_key) +"changelog"
+			"url": "/rest/api/3/search?jql=project" + encodeURI(" = " + project_key) + "&maxResults=999999&fields=*all&expand=names"
 		},
 		function(err, response, body) {
 			if (err) { 
