@@ -8,6 +8,7 @@ import SectionMessage from '@atlaskit/section-message';
 import QuestionCircleIcon from '@atlaskit/icon/glyph/question-circle';
 import AssigneeStatistics from '../components/AssigneStatistics';
 import EvaluationSelect from '../components/EvaluationSelect.js';
+import Predictions from '../components/Predictions.js';
 
 export default class IssueGlancePanel extends Component {
 	constructor(props) {
@@ -57,15 +58,13 @@ export default class IssueGlancePanel extends Component {
 
 			<p>{this.state.msg}</p>
 
+			<Predictions />
+
 			<br/>			
 			<SectionMessage appearance="warning" title="Warning!">
         		<p>There are several high risk factors in this change request!</p>
       		</SectionMessage>
 			<AssigneeStatistics data={assignee_stat}/>
-
-
-
-
 
 		</div>
     );

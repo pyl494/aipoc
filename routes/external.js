@@ -22,23 +22,6 @@ app.get('/', function (req, res) {
     });
 });
 
-app.get('/issue-glance-test', function(req, res) {
-    var assignee_stats = [
-        { assignee: 'bob29', issuenum: 3, delays: 12 },
-        { assignee: 'hd125', issuenum: 6, delays: 1 },
-        { assignee: 'steve', issuenum: 4, delays: 0 }
-    ];
-
-    
-    res.render('issue-glance-panel', {
-        title: 'Atlassian Connect',
-        assignee_stats: JSON.stringify(assignee_stats)
-
-        //issueId: req.query['issueId']
-
-    });
-});
-
 
 // This is an example route that's used by the default "generalPage" module.
 // Verify that the incoming request is authenticated with Atlassian Connect
@@ -56,10 +39,6 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
     var linked_issues = [];
     var evaluation_setting = 'def-no-eval';
 
-
-
-
-
     //util async function to get all issues from a project
     util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
 
@@ -76,58 +55,19 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
                 issues: issues_resp
             }
 
-        }).then((add_resp => {
+        }).then((() => {
             //make handshake
-            //return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})
-        })).then((hs_resp) => {
-            //do something with response
-            //console.log(hs_resp);
-        }).finally(() => {
+            return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})  
+        })).then(hs_resp => {
+            console.log(hs_resp.data.predictions)
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
-                evaluation_setting: evaluation_setting
-            });
+                evaluation_setting: evaluation_setting,
+                predictions: hs_resp.data.predictions
+            })
         })
     })
-
-    
-    /*
-    var t_URL = `http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`;
-    var issue_status = {
-        status: ""
-    }
-    var evaluation_setting = 'def-no-eval';
-
-
-    axios.post(t_URL, {
-    }).then((resp) => {
-
-        console.log(resp.data)
-        console.log("repsonse got")
-        console.log(resp)
-
-    }).catch((error) => {
-
-        console.error(error)
-
-
-    }).finally(() => {
-        // Render the page with hopefully any data that is necessary.
-        
-        res.render('issue-glance-panel', {
-            title: 'Atlassian Connect',
-            assignee_stats: JSON.stringify(assignee_stats),
-            evaluation_setting: evaluation_setting
-            //issueId: req.query['issueId']
-
-        });
-
-
-    })
-    */
-
-
 });
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {

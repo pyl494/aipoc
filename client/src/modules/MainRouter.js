@@ -11,7 +11,7 @@ export default class MainRouter extends Component {
   render() {
     return (
       <Router history={browserHistory}>
-		<Route path="/issue-glance-panel" component={IssueGlancePanel}/>
+		    <Route path="/issue-glance-panel" component={IssueGlancePanel}/>
       </Router>
     );
   }
