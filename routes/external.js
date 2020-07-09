@@ -35,24 +35,24 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 
     //var data = util.get_all_issues_project(app, addon, req, res, req.query.project);
     var project = req.query.project;
-    var issue_id = req.query.issue;
+    var issue_id = req.query.issueKey;
     var linked_issues = [];
-    var evaluation_setting = 'def-no-eval';
+	var evaluation_setting = 'def-no-eval';
+	
+	
+    util.get_issue_and_linked(app, addon, req, res, issue_id).then((issues_resp) => {
+        var issues = issues_resp.issues;
 
-    //util async function to get all issues from a project
-    util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
-
-        for (var i = 0; i < issues_resp.length; i++) {
-            issues_resp[i].fields.fixVersions = [ { name: "1.2.3"} ];
+        for (var i = 0; i < issues.length; i++) {
+            issues[i].fields.fixVersions = [ { name: "1.2.3"} ];
         }
-
-        //axois post to add issue
-        axios({
+		
+		axios({
             method: 'post',
             url: 'http://localhost:8080/micro?type=add',
             headers: {},
             data: {
-                issues: issues_resp
+                issues: issues
             }
 
         }).then((() => {
@@ -64,10 +64,42 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
                 evaluation_setting: evaluation_setting,
-                predictions: hs_resp.data.predictions
+                predictions: JSON.stringify(hs_resp.data.predictions)
             })
         })
-    })
+
+
+
+    });
+
+
+    //util async function to get all issues from a project
+    // util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
+    //     for (var i = 0; i < issues_resp.length; i++) {
+    //         issues_resp[i].fields.fixVersions = [ { name: "1.2.3"} ];
+    //     }
+    //     //axois post to add issue
+    //     axios({
+    //         method: 'post',
+    //         url: 'http://localhost:8080/micro?type=add',
+    //         headers: {},
+    //         data: {
+    //             issues: issues_resp
+    //         }
+
+    //     }).then((() => {
+    //         //make handshake
+    //         return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})  
+    //     })).then(hs_resp => {
+    //         console.log(hs_resp.data.predictions)
+    //         res.render('issue-glance-panel', {
+    //             title: 'Atlassian Connect',
+    //             assignee_stats: JSON.stringify(assignee_stats),
+    //             evaluation_setting: evaluation_setting,
+    //             predictions: JSON.stringify(hs_resp.data.predictions)
+    //         })
+    //     })
+    // })
 });
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {

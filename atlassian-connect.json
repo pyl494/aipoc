@@ -1,8 +1,8 @@
 {
-    "key": "risk-evader-app-cameron",
-    "name": "RiskEvader-cameron",
+    "key": "risk-evader-app",
+    "name": "RiskEvader",
     "description": "",
-    "baseUrl": "https://c9dab9bef61a.ngrok.io",
+    "baseUrl": "https://73fb3fe4aab7.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -50,7 +50,7 @@
                 "url": "/issue-glance-panel?issueKey={issue.key}&project={project.key}"
               },
               "name": {
-                "value": "Risk Management Assistant-cameron"
+                "value": "RiskEvader"
               },
               "key": "my-issue-glance"
             }
