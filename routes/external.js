@@ -35,16 +35,38 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 
     //var data = util.get_all_issues_project(app, addon, req, res, req.query.project);
     var project = req.query.project;
-    var issue_id = req.query.issueKey;
+    var issue_key = req.query.issueKey;
     var linked_issues = [];
 	var evaluation_setting = 'def-no-eval';
+    
+    /*
+    Todo:
+    Handshake process should go like this:
+    1) Send data explorer /handshake. 
+    2) If data explorer responds with 'Not found' or 'Not Up To Date', then do /add
+    3) Send data explorer /handshake
+    4) Get response/predictions
+    */
 	
-	
-    util.get_issue_and_linked(app, addon, req, res, issue_id).then((issues_resp) => {
+    util.get_issue_and_linked(app, addon, req, res, issue_key).then((issues_resp) => {
         var issues = issues_resp.issues;
+        
 
+        // TODO: CONVERT THESE INTO DATE OBJECTS SO THEY CAN BE COMPARED
+        let last_updated = -1;
         for (var i = 0; i < issues.length; i++) {
-            issues[i].fields.fixVersions = [ { name: "1.2.3"} ];
+            if (last_updated === -1){
+                if ('updated' in issues[i].fields)
+                    last_updated = issues[i].fields.updated;
+                else
+                    last_updated = issues[i].fields.created;
+            }
+            else{
+                if ('updated' in issues[i].fields && issues[i].fields.updated > last_updated)
+                    last_updated = issues[i].fields.updated;
+                else if (issues[i].fields.created > last_updated)
+                    last_updated = issues[i].fields.created;
+            }
         }
 		
 		axios({
@@ -57,9 +79,9 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 
         }).then((() => {
             //make handshake
-            return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})  
+            return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
         })).then(hs_resp => {
-            console.log(hs_resp.data.predictions)
+            console.log(hs_resp.data)
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
@@ -104,7 +126,7 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {
     var eval_set = req.query.type;
-    var issueid = req.query.issueid;
+    var issue_key = req.query.issueKey;
     var project = req.query.project;
 
     var label = 'None';
@@ -114,14 +136,14 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
     else if (eval_set == 'override-no-eval') { label = 'None'; }
     else { var result = { status: "ok" }; res.send(JSON.stringify(result)); return; }
 
-    var t_URL = `http://localhost:8080/micro?type=override&project=${project}&version=1.2.3&label=${label}`;
+    var t_URL = `http://localhost:8080/micro?type=override&change_request=${issue_key}&label=${label}`;
 
     axios.post(t_URL, {
     }).then((resp) => {
         var result = { status: '', reason: '' };
         if (resp.data.result == 'Not Found') {
             result.status = 'error';
-            result.reason = `${issueid} not found in ${project}`;
+            result.reason = `${issue_key} not found in ${project}`;
             res.send(JSON.stringify(result));
             return;
         }
