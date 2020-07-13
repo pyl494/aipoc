@@ -10,7 +10,7 @@
 	var predictions = "{{predictions}}";
 	var evaluation_setting = "{{evaluation_setting}}"
 	predictions = JSON.parse(predictions.replace(/&quot;/g,'"'));
-	console.log(JSON.stringify(predictions));
+	console.log("predictions: "+JSON.stringify(predictions.AdaBoost));
 	console.log(assignee_stat);
 	console.log(jwt_token);
 	get_stored_status(render_from_status);
