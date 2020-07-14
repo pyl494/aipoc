@@ -54,7 +54,7 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
             data: {
                 issues: issues
             }
-
+            
         }).then((() => {
             //make handshake
             return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})  

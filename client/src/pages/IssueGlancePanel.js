@@ -54,16 +54,15 @@ export default class IssueGlancePanel extends Component {
 			<Lozenge appearance="removed" isBold>High Risk</Lozenge>
 			<br/>
 			<br/>
+			<h5>Risk Rating</h5>
 			<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
 
-			<p>{this.state.msg}</p>
+			<br/>
+			<br/>
 
 			<Predictions />
 
-			<br/>			
-			<SectionMessage appearance="warning" title="Warning!">
-        		<p>There are several high risk factors in this change request!</p>
-      		</SectionMessage>
+			<br/>
 			<AssigneeStatistics data={assignee_stat}/>
 
 		</div>
