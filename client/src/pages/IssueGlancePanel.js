@@ -1,14 +1,23 @@
+//react
 import React, { Component } from 'react';
-import Button, { ButtonGroup } from '@atlaskit/button';
 import { useLocation } from 'react-router-dom'
 import { userParams } from 'react-router-dom'
+
+//atlassian
+import Button, { ButtonGroup } from '@atlaskit/button';
 import Lozenge, { ThemeAppearance } from '@atlaskit/lozenge';
 import Select from '@atlaskit/select';
 import SectionMessage from '@atlaskit/section-message';
 import QuestionCircleIcon from '@atlaskit/icon/glyph/question-circle';
+
+//components
 import AssigneeStatistics from '../components/AssigneStatistics';
 import EvaluationSelect from '../components/EvaluationSelect.js';
-import Predictions from '../components/Predictions.js';
+import Predictions from '../components/Predictions';
+import Features from '../components/Features';
+
+//bootstrap
+import { Container, Row, Col } from 'react-bootstrap';
 
 export default class IssueGlancePanel extends Component {
 	constructor(props) {
@@ -38,9 +47,9 @@ export default class IssueGlancePanel extends Component {
 
 
 		this.state = { 
-			value: to_set ,
-			msg: ""
-		
+			value: to_set,
+			msg: "",
+			risk: "High Risk"
 		};
 		
 	}
@@ -48,24 +57,31 @@ export default class IssueGlancePanel extends Component {
 	
   render() {
     return (
-		<div>
-			<h4>RiskEvader<Button><QuestionCircleIcon size="small" label=""/></Button></h4>
-
-			<Lozenge appearance="removed" isBold>High Risk</Lozenge>
-			<br/>
-			<br/>
-			<h5>Risk Rating</h5>
-			<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
-
-			<br/>
-			<br/>
-
-			<Predictions />
-
-			<br/>
-			<AssigneeStatistics data={assignee_stat}/>
-
-		</div>
+		<Container>
+			<Row>
+				<Col>
+					<h4>RiskEvader</h4>
+				</Col>
+				<Col>
+					<Lozenge appearance="removed" isBold maxWidth={300}>{this.state.risk}</Lozenge>
+				</Col>
+			</Row>
+			<Row style={{marginTop: "2em"}}>
+				<Col>
+					<h5>Risk Evaluation</h5>
+				</Col>
+			</Row>
+			<Row>
+				<Col>
+					<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
+				</Col>
+			</Row>
+			<Row style={{marginTop: "2em"}}>
+				<Col>
+					<Features />
+				</Col>
+			</Row>
+		</Container>
     );
   }
 }

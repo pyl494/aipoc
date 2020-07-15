@@ -2,7 +2,7 @@
     "key": "risk-evader-app-cameron",
     "name": "RiskEvader-cameron",
     "description": "",
-    "baseUrl": "https://bb17bad16bd8.ngrok.io",
+    "baseUrl": "https://249c6fd62cf3.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -42,7 +42,7 @@
               "content": {
                 "type": "label",
                 "label": {
-                  "value": "View Risk"
+                  "value": "High Risk"
                 }
               },
               "target": {

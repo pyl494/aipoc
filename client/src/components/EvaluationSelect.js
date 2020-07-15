@@ -5,8 +5,7 @@ const GROUP_OPTIONS = [
 	{
 	  label: 'Machine Learning',
 	  options: [
-		{ label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval' },
-		{ label: 'No Current Evaluation', value: 'def-no-eval' }
+		{ label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval' }
 	  ],
 	},
 	{
@@ -15,7 +14,7 @@ const GROUP_OPTIONS = [
 		{ label: 'Override: High Risk', value: 'override-high' },
 		{ label: 'Override: Medium Risk', value: 'override-medium' },
 		{ label: 'Override: Low Risk', value: 'override-low' },
-		{ label: 'Don\'t Evaluate', value: 'override-no-eval' },
+		{ label: 'Don\'t Evaluate', value: 'override-no-eval' }
 	  ],
 	},
   ];
@@ -26,17 +25,20 @@ const GROUP_OPTIONS = [
 export default class EvaluationSelection extends Component {
 	constructor(props) {
 		super(props);
-		var to_set = { label: 'No Current Evaluation', value: 'def-no-eval' };
 
 		this.state = {
-			value: to_set
+			value: {
+				label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval'
+			}
 		}
 		this.handleChange = this.handleChange.bind(this);
 	}
 
-	handleChange(obj) {
+	handleChange(value) {
+		/*
 		var handle = JSON.parse(JSON.stringify(obj)); // This is to extract the object.
 		var panel = this;
+		
 		$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&project=" + get("project") + "&issueKey=" + get("issueKey") + "&type=" + handle.value.value, {
 			"error": function (xhr, textStatus, errorThrown) {
 
@@ -46,15 +48,14 @@ export default class EvaluationSelection extends Component {
 				panel.setState({msg: data});
 			}
 		});
+		*/
 
-		this.setState(obj);
+		this.setState(value);
 	}
 
 	render() {
 		return (
 			<Select options={GROUP_OPTIONS} value={this.state.value} onChange={value => this.handleChange({ value })}></Select>
-
 		)
-
 	}
 }
