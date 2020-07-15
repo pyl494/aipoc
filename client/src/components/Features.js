@@ -32,13 +32,26 @@ export default class Features extends Component {
                 <Row>
                     {this.state.featuresOpen &&
                         <div>
-                            Features
+                            map features here to their respective component templates
+                            <ul>
+                                <li>Assignees</li>
+                                <li>Versions</li>
+                                <li>Issues</li>
+                                <li>Dependancies</li>
+                            </ul>
                         </div>
                     }
                 </Row>
                 <Row>
                     <Col>
-                        <h5><a style={{cursor: "pointer"}} onClick={this.openFeatures}>Show Features</a></h5>
+                        <h5>
+                            <a style={{cursor: "pointer"}} onClick={this.openFeatures}>
+                                {this.state.featuresOpen ?
+                                    <div>Show Features</div> :
+                                    <div>Hide Features</div>
+                                }
+                            </a>
+                        </h5>
                     </Col>
                 </Row>
             </Container>
