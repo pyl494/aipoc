@@ -22,7 +22,7 @@ export default class Features extends Component {
 
     openFeatures(){
         this.setState({
-            featuresOpen: true
+            featuresOpen: !this.state.featuresOpen
         })
     }
 
