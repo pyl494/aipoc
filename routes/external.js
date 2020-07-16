@@ -22,6 +22,43 @@ app.get('/', function (req, res) {
     });
 });
 
+app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) {
+
+    var issueKey = req.param('issueKey');
+    var ltext = req.param('ltext');
+    var ltype = req.param('ltype');
+
+    var appkey = "risk-evader-app-cain";
+    var modulekey = "my-issue-glance";
+
+
+    var construct_url = `/rest/api/3/issue/${issueKey}/properties/com.atlassian.jira.issue:${appkey}:${modulekey}:status`;
+
+    var loz_obj = `{ "type": "lozenge", "value": { "label": "${ltext}", "type": "${ltype}" } }`;
+
+
+    var httpClient = addon.httpClient(req);
+
+    httpClient.put({
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "url": construct_url,
+            "body": loz_obj
+        },
+        function(err, response, body) {
+            if (err) { 
+            console.log(response.statusCode + ": " + err);
+            res.send("Error: " + response.statusCode + ": " + err);
+            }
+            else {
+                console.log(response.statusCode, body);
+                res.send(body);
+            }
+        }
+    );
+});
+
 
 // This is an example route that's used by the default "generalPage" module.
 // Verify that the incoming request is authenticated with Atlassian Connect
@@ -81,12 +118,14 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
             //make handshake
             return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
         })).then(hs_resp => {
+
             console.log(hs_resp.data)
+
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
                 evaluation_setting: evaluation_setting,
-                predictions: JSON.stringify(hs_resp.data.predictions),
+                handshake_resp: JSON.stringify(hs_resp.data),
                 features: JSON.stringify(hs_resp.data.features)
             })
         })
