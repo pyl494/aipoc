@@ -13,48 +13,20 @@ import { Container, Row, Col } from 'react-bootstrap';
 export default class Features extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            featuresOpen: false
-        };
-
-        this.openFeatures = this.openFeatures.bind(this);
-    }
-
-    openFeatures(){
-        this.setState({
-            featuresOpen: !this.state.featuresOpen
-        })
+        //console.log("features: "+features.length);
     }
 
 	render() {
+        var featureList = Object.keys(features).map(function(key) {
+        return <div>{key}: {features[key]}</div>
+        });
+
 		return (
-            <Container>
-                <Row>
-                    {this.state.featuresOpen &&
-                        <div>
-                            map features here to their respective component templates
-                            <ul>
-                                <li>Assignees</li>
-                                <li>Versions</li>
-                                <li>Issues</li>
-                                <li>Dependancies</li>
-                            </ul>
-                        </div>
-                    }
-                </Row>
-                <Row>
-                    <Col>
-                        <h5>
-                            <a style={{cursor: "pointer"}} onClick={this.openFeatures}>
-                                {this.state.featuresOpen ?
-                                    <div>Show Features</div> :
-                                    <div>Hide Features</div>
-                                }
-                            </a>
-                        </h5>
-                    </Col>
-                </Row>
-            </Container>
+            <div>
+                {
+                    featureList
+                }
+            </div>
 		)
 	}
 }

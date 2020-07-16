@@ -14,6 +14,7 @@ import QuestionCircleIcon from '@atlaskit/icon/glyph/question-circle';
 import AssigneeStatistics from '../components/AssigneStatistics';
 import EvaluationSelect from '../components/EvaluationSelect.js';
 import Predictions from '../components/Predictions';
+import Expand from '../components/Expand';
 import Features from '../components/Features';
 
 //bootstrap
@@ -76,9 +77,11 @@ export default class IssueGlancePanel extends Component {
 					<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
 				</Col>
 			</Row>
-			<Row style={{marginTop: "2em"}}>
+			<Row>
 				<Col>
-					<Features />
+					<Expand>
+						<Features />
+					</Expand>
 				</Col>
 			</Row>
 		</Container>
