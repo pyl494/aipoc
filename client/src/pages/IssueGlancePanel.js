@@ -46,11 +46,47 @@ export default class IssueGlancePanel extends Component {
 		}
 		catch (ex) { console.log(ex); }
 
+		var do_show = false;
+		var lower_count = 0;
+		var medium_count = 0;
+		var high_count = 0;
+
+		var risk_set = "";
+		var lozenge_set = ""
+
+		if (resultObject != null && resultObject != undefined && resultObject.hasOwnProperty("predictions")) {
+			do_show = true;
+			
+			for (const [x, y] of Object.entries(resultObject.predictions)) { 
+				if (y.toLowerCase() == "low") {lower_count++;}
+				else if (y.toLowerCase() == "medium") {medium_count++;}
+				else if (y.toLowerCase() == "high") { high_count++;}
+			}
+
+
+			if (lower_count > medium_count && lower_count > high_count) {
+				risk_set = "Low Risk";
+				lozenge_set = "success";
+			}
+			else if (medium_count > high_count) {
+				risk_set = "Medium Risk";
+				lozenge_set = "moved"
+			}
+			else {
+				risk_set = "High Risk";
+				lozenge_set = "removed"
+			}
+		}
+
+		set_lozange(risk_set, lozenge_set);
+
 
 		this.state = { 
 			value: to_set,
 			msg: "",
-			risk: "High Risk"
+			risk: risk_set,
+			lozenge_app: lozenge_set,
+			lozengeShow: do_show
 		};
 		
 	}
@@ -64,7 +100,9 @@ export default class IssueGlancePanel extends Component {
 					<h4>RiskEvader</h4>
 				</Col>
 				<Col>
-					<Lozenge appearance="removed" isBold maxWidth={300}>{this.state.risk}</Lozenge>
+					{ this.state.lozengeShow &&
+						<Lozenge appearance={this.state.lozenge_app} isBold maxWidth={300}>{this.state.risk}</Lozenge>
+					}
 				</Col>
 			</Row>
 			<Row style={{marginTop: "2em"}}>

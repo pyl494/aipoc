@@ -7,10 +7,10 @@
 	var jwt_token = "{{token}}";
 	var assignee_stat = "{{assignee_stats}}";
 	assignee_stat = JSON.parse(assignee_stat.replace(/&quot;/g,'"'));
-	var predictions = "{{predictions}}";
+	var resultObject = "{{handshake_resp}}";
 	var evaluation_setting = "{{evaluation_setting}}"
-	predictions = JSON.parse(predictions.replace(/&quot;/g,'"'));
-	console.log("predictions: "+JSON.stringify(predictions.AdaBoost));
+	resultObject = JSON.parse(resultObject.replace(/&quot;/g,'"'));
+	console.log("resultObject: " +JSON.stringify(resultObject));
 	console.log(assignee_stat);
 	console.log(jwt_token);
 	get_stored_status(render_from_status);

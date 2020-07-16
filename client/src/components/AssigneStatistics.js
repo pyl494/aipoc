@@ -23,7 +23,7 @@ export default class AssigneeStatistics extends Component {
 
 		// Generate the table from the
 		this.state.tabs[0].content = <table id='issue_tab'><thead><tr><th>Assignee</th><th>Issues</th></tr></thead><tbody>{this.render_issue_table_data()}</tbody></table>;
-		this.state.tabs[1].content = <table id='delay_tab'><tbody>{this.render_delay_table_data()}</tbody></table>;
+		this.state.tabs[1].content = <table id='delay_tab'><thead><tr><th>Assignee</th><th>Delays</th></tr></thead><tbody>{this.render_delay_table_data()}</tbody></table>;
 	}
 
 	render_issue_table_data() {

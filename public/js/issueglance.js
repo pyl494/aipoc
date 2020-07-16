@@ -49,25 +49,20 @@ function set_stored_status(status, callback) {
 
 function set_lozange(ltext, ltype) {
 
-	var issuekey = get('issuekey');
-	var appkey = "risk-evader-app";
+	var issuekey = get('issueKey');
+	var appkey = "risk-evader-app"; // Set this to the app key.
 	var modulekey = "my-issue-glance";
 
-	var constr_url = `/rest/api/3/issue/${issuekey}/properties/com.atlassian.jira.issue:${appkey}:${modulekey}:status`;
+	var constr_url = `/set-issue-property-lozange?jwt=${jwt_token}&issueKey=${encodeURI(issuekey)}&ltext=${ltext}&ltype=${(ltype)}`
 
-	var loz_obj = `{ "type": "lozenge", "value": { "label": "${ltext}", "type": "${ltype}" } }`;
+	console.log(constr_url);
 
-	AP.request(
-		{
-			url: constr_url,
-			type: 'PUT',
-			body: loz_obj
-		}, {
-		error: function(xhr, statusText, errorThrown) {
-		},
-		success: function(responseText) {
-		}
+	$.ajax(constr_url, {
+		"error": function (xhr, textStatus, errorThrown) { console.error(errorThrown); },
+		"success": function(data) { console.log(data); }
 	});
+
+
 
 }
 

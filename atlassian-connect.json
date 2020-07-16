@@ -1,8 +1,8 @@
 {
-    "key": "risk-evader-app-cameron",
-    "name": "RiskEvader-cameron",
+    "key": "risk-evader-app-cain",
+    "name": "RiskEvader-cain",
     "description": "",
-    "baseUrl": "https://249c6fd62cf3.ngrok.io",
+    "baseUrl": "https://d715f44e85c9.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -10,7 +10,7 @@
         "installed": "/installed"
     },
     "scopes": [
-        "READ"
+        "READ", "WRITE"
     ],
     "links": {
         "postInstallUrl": "/hello-world",
@@ -50,7 +50,7 @@
                 "url": "/issue-glance-panel?issueKey={issue.key}&project={project.key}"
               },
               "name": {
-                "value": "RiskEvader-cameron"
+                "value": "RiskEvader-cain"
               },
               "key": "my-issue-glance"
             }
