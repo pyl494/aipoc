@@ -86,6 +86,7 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
                 evaluation_setting: evaluation_setting,
+                handshake_resp: JSON.stringify(hs_resp.data),
                 predictions: JSON.stringify(hs_resp.data.predictions),
                 features: JSON.stringify(hs_resp.data.features)
             })
