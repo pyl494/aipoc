@@ -1,8 +1,8 @@
 {
-    "key": "risk-evader-app-cain",
-    "name": "RiskEvader-cain",
+    "key": "risk-evader-app-cam",
+    "name": "RiskEvader-cam",
     "description": "",
-    "baseUrl": "https://d715f44e85c9.ngrok.io",
+    "baseUrl": "https://0bac9383a421.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -50,7 +50,7 @@
                 "url": "/issue-glance-panel?issueKey={issue.key}&project={project.key}"
               },
               "name": {
-                "value": "RiskEvader-cain"
+                "value": "RiskEvader-cam"
               },
               "key": "my-issue-glance"
             }

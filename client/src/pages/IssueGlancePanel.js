@@ -20,6 +20,10 @@ import Features from '../components/Features';
 //bootstrap
 import { Container, Row, Col } from 'react-bootstrap';
 
+//radar chart
+import RadarChart from 'react-svg-radar-chart';
+import 'react-svg-radar-chart/build/css/index.css'
+
 export default class IssueGlancePanel extends Component {
 	constructor(props) {
 		super(props);
@@ -93,6 +97,33 @@ export default class IssueGlancePanel extends Component {
 	
 	
   render() {
+	  //i need this passed from the backend
+	  const dummy = {
+		  weights: [
+			  {
+				data: {
+					number_of_issues: 0.7,
+					number_of_bugs: 0.3,
+					number_of_comments: 0.2,
+					elapsed_time: 0.5,
+					delays: 0.9
+				},
+				meta: {color: "blue"}
+			  }
+		  ],
+		  featureNames: {
+			number_of_issues: "Issues",
+			number_of_bugs: "Bugs",
+			number_of_comments: "Comments",
+			elapsed_time: "Time",
+			delays: "Delays"
+		  }
+	  }
+
+	const data = dummy.weights
+
+	const captions = dummy.featureNames
+
     return (
 		<Container>
 			<Row>
@@ -115,7 +146,17 @@ export default class IssueGlancePanel extends Component {
 					<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
 				</Col>
 			</Row>
+			<Row style={{marginTop: "2em"}}>
+				<Col>
+					<h5>Risk Influence</h5>
+				</Col>
+			</Row>
 			<Row>
+				<Col>
+					<RadarChart captions={captions} data={data} />
+				</Col>
+			</Row>
+			<Row style={{paddingBottom: "2em"}}>
 				<Col>
 					<Expand>
 						<Features />

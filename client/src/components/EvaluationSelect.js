@@ -50,6 +50,7 @@ export default class EvaluationSelection extends Component {
 
 		this.setState(value);
 	}
+	
 
 	render() {
 		return (

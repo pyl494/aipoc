@@ -1,4 +1,10 @@
 
+#TODO:
+- Toggle features?
+- animate show features expand
+- style spider graph
+- accessability and hints
+
 # Getting Started:
 
 - Download node.js
@@ -21,11 +27,3 @@ https://developer.atlassian.com/cloud/jira/platform/getting-started/
 
 Changes to atlassian-connect.json will require a uninstall / re-uploading of the addon on Atlassian Cloud.
 
-# Overview
-
-At the moment, the code follows the Atlassian Connect Express template, which serves pages with the routes listed in routes/index.js and developed in views/. In this way, the front end stuff is all in the views/ files.
-
-You can see some details in these links:
-
-- https://developer.atlassian.com/cloud/bitbucket/getting-started/
-- https://developer.atlassian.com/cloud/jira/platform/getting-started/
