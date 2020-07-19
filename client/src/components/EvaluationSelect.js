@@ -35,20 +35,18 @@ export default class EvaluationSelection extends Component {
 	}
 
 	handleChange(value) {
-		/*
-		var handle = JSON.parse(JSON.stringify(obj)); // This is to extract the object.
+		var handle = JSON.parse(JSON.stringify(value)); // This is to extract the object.
 		var panel = this;
 		
-		$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&project=" + get("project") + "&issueKey=" + get("issueKey") + "&type=" + handle.value.value, {
+		$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&change_request=" + get("issueKey") + "&label=" + handle.value.value, {
 			"error": function (xhr, textStatus, errorThrown) {
 
 			},
 			"success": function (data) {
 				console.log(data);
-				panel.setState({msg: data});
+				panel.setState( {msg: data} );
 			}
 		});
-		*/
 
 		this.setState(value);
 	}

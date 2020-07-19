@@ -165,18 +165,21 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 });
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {
-    var eval_set = req.query.type;
-    var issue_key = req.query.issueKey;
-    var project = req.query.project;
+
+
+    var override_label = req.query.label;
+    var change_request = req.query.change_request;
+
+    console.log(`override_label: ${override_label}  change_request: ${change_request}`);
 
     var label = 'None';
-    if (eval_set == 'override-high') { label = 'high'; }
-    else if (eval_set == 'override-medium') { label = 'medium'; }
-    else if (eval_set == 'override-low') { label = 'low'; }
-    else if (eval_set == 'override-no-eval') { label = 'None'; }
-    else { var result = { status: "ok" }; res.send(JSON.stringify(result)); return; }
+    if (override_label == 'override-high') { label = 'high'; }
+    else if (override_label == 'override-medium') { label = 'medium'; }
+    else if (override_label == 'override-low') { label = 'low'; }
+    else if (override_label == 'override-no-eval') { label = 'None'; }
+    else { var result = { status: "error", reason: "Unknown label: " + override_label }; res.send(JSON.stringify(result)); return; }
 
-    var t_URL = `http://localhost:8080/micro?type=override&change_request=${issue_key}&label=${label}`;
+    var t_URL = `http://localhost:8080/micro?type=override&change_request=${change_request}&label=${label}`;
 
     axios.post(t_URL, {
     }).then((resp) => {
@@ -196,11 +199,9 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
         res.send(JSON.stringify(result));
 
     }).finally(() => {
-
-
+        result = { status: 'ok' };
+        res.send(JSON.stringify(result))
     });
-
-
     
 });
 
