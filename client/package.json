@@ -30,11 +30,12 @@
     "prop-types": "^15.6.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.2",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.13.1",
     "react-fontawesome": "^1.7.1",
     "react-router": "^3.2.0",
     "react-router-dom": "^4.2.2",
-    "react-svg-radar-chart": "^1.2.0"
+    "react-svg-radar-chart": "^1.2.0",
+    "reactstrap": "^8.5.1"
   },
   "devDependencies": {
     "@storybook/react": "^3.1.9",
