@@ -9,6 +9,8 @@ import Lozenge, { ThemeAppearance } from '@atlaskit/lozenge';
 import Select from '@atlaskit/select';
 import SectionMessage from '@atlaskit/section-message';
 import QuestionCircleIcon from '@atlaskit/icon/glyph/question-circle';
+import QuestionIcon from '@atlaskit/icon/glyph/question';
+import Tooltip, { TooltipPrimitive } from '@atlaskit/tooltip';
 
 //components
 import AssigneeStatistics from '../components/AssigneStatistics';
@@ -55,7 +57,8 @@ export default class IssueGlancePanel extends Component {
 		var high_count = 0;
 
 		var risk_set = "";
-		var lozenge_set = ""
+		var lozenge_set = "";
+		var web_colour = "blue";
 
 		if (resultObject != null && resultObject != undefined && resultObject.hasOwnProperty("predictions")) {
 			do_show = true;
@@ -70,14 +73,18 @@ export default class IssueGlancePanel extends Component {
 			if (lower_count > medium_count && lower_count > high_count) {
 				risk_set = "Low Risk";
 				lozenge_set = "success";
+				web_colour = "rgb(0, 135, 90)";
+
 			}
 			else if (medium_count > high_count) {
 				risk_set = "Medium Risk";
 				lozenge_set = "moved"
+				web_colour = "rgb(255, 139, 0)";
 			}
 			else {
 				risk_set = "High Risk";
 				lozenge_set = "removed"
+				web_colour = "rgb(222, 53, 11)";
 			}
 		}
 
@@ -90,7 +97,26 @@ export default class IssueGlancePanel extends Component {
 			risk: risk_set,
 			lozenge_app: lozenge_set,
 			lozengeShow: do_show,
-			isOpen: false
+			isOpen: false,
+			spider_web_data: [
+				{
+					data: {
+						number_of_issues: 0.7,
+						number_of_bugs: 0.3,
+						number_of_comments: 0.2,
+						elapsed_time: 0.5,
+						delays: 0.9
+					},
+					meta: { color: web_colour }
+				}
+			],
+			spider_web_labels: {
+				number_of_issues: "Issues",
+				number_of_bugs: "Bugs",
+				number_of_comments: "Comments",
+				elapsed_time: "Time",
+				delays: "Delays"
+			}
 		};
 		
 		this.expand = this.expand.bind(this);
@@ -103,6 +129,8 @@ export default class IssueGlancePanel extends Component {
 		
 		console.log(this.state.isOpen)
 	}
+
+
 	
 	render() {
 		//i need this passed from the backend
@@ -116,7 +144,7 @@ export default class IssueGlancePanel extends Component {
 						elapsed_time: 0.5,
 						delays: 0.9
 					},
-					meta: {color: "blue"}
+					meta: { color: "blue" }
 				}
 			],
 			featureNames: {
@@ -146,7 +174,7 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row style={{marginTop: "2em"}}>
 					<Col>
-						<h5>Risk Evaluation</h5>
+						<Tooltip content="Hello World"><h5>Risk Evaluation <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
 				</Row>
 				<Row>
@@ -156,12 +184,12 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row style={{marginTop: "2em"}}>
 					<Col>
-						<h5>Risk Influence</h5>
+						<Tooltip content="Hello World"><h5>Risk Influence <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
 				</Row>
 				<Row>
 					<Col>
-						<RadarChart captions={captions} data={data} />
+						<RadarChart captions={this.state.spider_web_labels} data={this.state.spider_web_data} />
 					</Col>
 				</Row>
 				<Row style={{paddingBottom: "2em", paddingTop: "2em"}}>

@@ -26,6 +26,7 @@
     "@atlaskit/select": "^11.0.12",
     "@atlaskit/tabs": "^11.2.11",
     "@atlaskit/theme": "^2.3.4",
+    "@atlaskit/tooltip": "^16.0.1",
     "bootstrap": "^4.5.0",
     "prop-types": "^15.6.0",
     "react": "^16.13.1",
