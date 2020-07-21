@@ -5,10 +5,7 @@ const GROUP_OPTIONS = [
 	{
 	  label: 'Machine Learning',
 	  options: [
-		{ label: {
-				value: 'risk-evader-eval'
-			}
-		}
+		{ label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval' }
 	  ],
 	},
 	{
