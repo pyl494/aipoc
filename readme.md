@@ -1,9 +1,10 @@
 
-#TODO:
-- Toggle features?
-- animate show features expand
-- style spider graph
-- accessability and hints
+# TODO:
+
+[x] animate show features expand
+[] style spider graph
+[x] tooltips
+[] accessability
 
 # Getting Started:
 
