@@ -5,31 +5,29 @@ import React, { Component } from "react"
 import { Container, Row, Col } from 'react-bootstrap';
 
 //components
+import Feature from './Feature'
 
 export default class Features extends Component {
 
 	render() {
         var featureList = Object.keys(features).map(function(key) {
             return(
-                <tr>
-                    <td>{key}</td>
-                    <td>{features[key]}</td>
-                </tr>
+                <Row>
+                    <Col>
+                        <Feature name={key} value={features[key]} />
+                    </Col>
+                </Row>
             )
         });
 
 		return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {featureList}
-                </tbody>
-            </table>
+            <Container>
+                <Row>
+                    <Col>
+                        {featureList}
+                    </Col>
+                </Row>
+            </Container>
 		)
 	}
 }

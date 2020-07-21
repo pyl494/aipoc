@@ -2,11 +2,13 @@
 # TODO:
 
 * [x] animate show features expand
-* [] style spider graph
+* [] style spider graph font
 * [x] tooltips
-* [] accessability
 * [] spider chart mapping from backend
 * [] lozenge override
+* [] Drop down from lozenge instead of risk evaluation
+* [] Ledgend or clearer labels for spider graph
+* [] Mapping features to components
 
 # Getting Started:
 

@@ -164,22 +164,12 @@ export default class IssueGlancePanel extends Component {
 			<Container>
 				<Row>
 					<Col>
-						<h4>RiskEvader</h4>
-					</Col>
-					<Col>
-						{ this.state.lozengeShow &&
-							<Lozenge appearance={this.state.lozenge_app} isBold maxWidth={300}>{this.state.risk}</Lozenge>
-						}
-					</Col>
-				</Row>
-				<Row style={{marginTop: "2em"}}>
-					<Col>
 						<Tooltip content="Hello World"><h5>Risk Evaluation <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
 				</Row>
 				<Row>
 					<Col>
-						<EvaluationSelect evaluation={this.state.value}></EvaluationSelect>
+						<EvaluationSelect />
 					</Col>
 				</Row>
 				<Row style={{marginTop: "2em"}}>

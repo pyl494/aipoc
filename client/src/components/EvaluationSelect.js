@@ -5,7 +5,10 @@ const GROUP_OPTIONS = [
 	{
 	  label: 'Machine Learning',
 	  options: [
-		{ label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval' }
+		{ label: {
+				value: 'risk-evader-eval'
+			}
+		}
 	  ],
 	},
 	{
@@ -54,7 +57,7 @@ export default class EvaluationSelection extends Component {
 
 	render() {
 		return (
-			<Select options={GROUP_OPTIONS} value={this.state.value} onChange={value => this.handleChange({ value })}></Select>
+			<Select options={GROUP_OPTIONS} value={this.state.value} onChange={value => this.handleChange({ value })} />
 		)
 	}
 }
