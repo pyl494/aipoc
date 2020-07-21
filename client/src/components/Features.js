@@ -2,7 +2,8 @@
 import React, { Component } from "react"
 
 //bootstrap
-import { Container, Row, Col } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
+import { Container, Row, Col, Collapse } from 'reactstrap';
 
 //components
 import Feature from './Feature'
@@ -12,9 +13,9 @@ export default class Features extends Component {
 	render() {
         var featureList = Object.keys(features).map(function(key) {
             return(
-                <Row>
+                <Row style={{paddingTop: "1em"}}>
                     <Col>
-                        <Feature name={key} value={features[key]} />
+                        <Feature type={typeof features[key]} name={key} value={features[key]} />
                     </Col>
                 </Row>
             )
@@ -22,11 +23,7 @@ export default class Features extends Component {
 
 		return (
             <Container>
-                <Row>
-                    <Col>
-                        {featureList}
-                    </Col>
-                </Row>
+                {featureList}
             </Container>
 		)
 	}

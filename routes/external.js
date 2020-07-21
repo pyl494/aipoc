@@ -121,47 +121,25 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
 
             console.log(hs_resp.data)
 
+            var dummyResponse = {
+                    number_of_issues: 3,
+                    labels: ["Array", "of", "Strings", "Example"],
+                    label: "String example"
+                  }
+
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
                 evaluation_setting: evaluation_setting,
                 handshake_resp: JSON.stringify(hs_resp.data),
-                features: JSON.stringify(hs_resp.data.features)
+                //features: JSON.stringify(hs_resp.data.features)
+                features: JSON.stringify(dummyResponse)
             })
         })
 
 
 
     });
-
-
-    //util async function to get all issues from a project
-    // util.get_all_issues_project(app, addon, req, res, req.query.project).then((issues_resp) => {
-    //     for (var i = 0; i < issues_resp.length; i++) {
-    //         issues_resp[i].fields.fixVersions = [ { name: "1.2.3"} ];
-    //     }
-    //     //axois post to add issue
-    //     axios({
-    //         method: 'post',
-    //         url: 'http://localhost:8080/micro?type=add',
-    //         headers: {},
-    //         data: {
-    //             issues: issues_resp
-    //         }
-
-    //     }).then((() => {
-    //         //make handshake
-    //         return axios.post(`http://localhost:8080/micro?type=handshake&project=${project}&version=1.2.3`, {})  
-    //     })).then(hs_resp => {
-    //         console.log(hs_resp.data.predictions)
-    //         res.render('issue-glance-panel', {
-    //             title: 'Atlassian Connect',
-    //             assignee_stats: JSON.stringify(assignee_stats),
-    //             evaluation_setting: evaluation_setting,
-    //             predictions: JSON.stringify(hs_resp.data.predictions)
-    //         })
-    //     })
-    // })
 });
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {

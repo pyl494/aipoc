@@ -126,8 +126,6 @@ export default class IssueGlancePanel extends Component {
         this.setState({
             isOpen: !this.state.isOpen
 		})
-		
-		console.log(this.state.isOpen)
 	}
 
 
@@ -161,7 +159,7 @@ export default class IssueGlancePanel extends Component {
 		const captions = dummy.featureNames
 
 		return (
-			<Container>
+			<Container fluid>
 				<Row>
 					<Col>
 						<Tooltip content="Hello World"><h5>Risk Evaluation <QuestionCircleIcon size="small"/></h5></Tooltip>
@@ -190,7 +188,7 @@ export default class IssueGlancePanel extends Component {
 										<div>Show Features</div>
 									}
 						</Button>
-						<Collapse style={{paddingTop: "2em"}} isOpen={this.state.isOpen}>
+						<Collapse isOpen={this.state.isOpen}>
 							<Features />
 						</Collapse>
 					</Col>
