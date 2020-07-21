@@ -1,10 +1,12 @@
 
 # TODO:
 
-[x] animate show features expand
-[] style spider graph
-[x] tooltips
-[] accessability
+* [x] animate show features expand
+* [] style spider graph
+* [x] tooltips
+* [] accessability
+* [] spider chart mapping from backend
+* [] lozenge override
 
 # Getting Started:
 
