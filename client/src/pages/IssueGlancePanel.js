@@ -167,7 +167,7 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row>
 					<Col>
-						<EvaluationSelect />
+						<EvaluationSelect risk={this.state.risk}/>
 					</Col>
 				</Row>
 				<Row style={{marginTop: "2em"}}>
