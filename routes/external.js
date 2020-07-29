@@ -119,25 +119,25 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
             return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
         })).then(hs_resp => {
 
-            console.log(hs_resp.data)
+            console.log(Object.keys(hs_resp.data.features)[0])
+            console.log(hs_resp.data.features[Object.keys(hs_resp.data.features)[0]])
 
-            var dummyResponse = {
-                    number_of_issues: 3,
-                    labels: ["Array", "of", "Strings", "Example"],
-                    label: "String example"
-                  }
+            var features = {};
+
+            for(var i = 0; i<5; i++){
+                features[Object.keys(hs_resp.data.features)[i]] = hs_resp.data.features[Object.keys(hs_resp.data.features)[i]];
+            }
+
+            console.log("Top 5 features: "+JSON.stringify(features));
 
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
                 assignee_stats: JSON.stringify(assignee_stats),
                 evaluation_setting: evaluation_setting,
                 handshake_resp: JSON.stringify(hs_resp.data),
-                //features: JSON.stringify(hs_resp.data.features)
-                features: JSON.stringify(dummyResponse)
+                features: JSON.stringify(features)
             })
         })
-
-
 
     });
 });
@@ -167,9 +167,6 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
             result.reason = `${issue_key} not found in ${project}`;
             res.send(JSON.stringify(result));
             return;
-        }
-        else {
-
         }
     }).catch((error) => {
         var result = { status: 'error', reason: 'Backend error.' };

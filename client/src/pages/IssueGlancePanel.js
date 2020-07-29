@@ -28,6 +28,9 @@ import 'react-svg-radar-chart/build/css/index.css'
 export default class IssueGlancePanel extends Component {
 	constructor(props) {
 		super(props);
+
+		console.log("features: "+features);
+
 		var to_set = { label: 'No Current Evaluation', value: 'def-no-eval' };
 		try {
 			switch(evaluation_setting) {
@@ -58,7 +61,7 @@ export default class IssueGlancePanel extends Component {
 
 		var risk_set = "";
 		var lozenge_set = "";
-		var web_colour = "blue";
+		var web_colour = "rgb(0, 135, 90)";
 
 		if (resultObject != null && resultObject != undefined && resultObject.hasOwnProperty("predictions")) {
 			do_show = true;
@@ -101,21 +104,23 @@ export default class IssueGlancePanel extends Component {
 			spider_web_data: [
 				{
 					data: {
-						number_of_issues: 0.7,
-						number_of_bugs: 0.3,
-						number_of_comments: 0.2,
-						elapsed_time: 0.5,
-						delays: 0.9
+						feature_1: 0.7,
+						feature_2: 0.3,
+						feature_3: 0.2,
+						feature_4: 0.5,
+						feature_5: 0.9
 					},
-					meta: { color: web_colour }
+					meta: {
+						color: web_colour
+					}
 				}
 			],
 			spider_web_labels: {
-				number_of_issues: "Issues",
-				number_of_bugs: "Bugs",
-				number_of_comments: "Comments",
-				elapsed_time: "Time",
-				delays: "Delays"
+				feature_1: Object.keys(features)[0],
+				feature_2: Object.keys(features)[1],
+				feature_3: Object.keys(features)[2],
+				feature_4: Object.keys(features)[3],
+				feature_5: Object.keys(features)[4]
 			}
 		};
 		
@@ -131,33 +136,6 @@ export default class IssueGlancePanel extends Component {
 
 	
 	render() {
-		//i need this passed from the backend
-		const dummy = {
-			weights: [
-				{
-					data: {
-						number_of_issues: 0.7,
-						number_of_bugs: 0.3,
-						number_of_comments: 0.2,
-						elapsed_time: 0.5,
-						delays: 0.9
-					},
-					meta: { color: "blue" }
-				}
-			],
-			featureNames: {
-				number_of_issues: "Issues",
-				number_of_bugs: "Bugs",
-				number_of_comments: "Comments",
-				elapsed_time: "Time",
-				delays: "Delays"
-			}
-		}
-
-		const data = dummy.weights
-
-		const captions = dummy.featureNames
-
 		return (
 			<Container fluid>
 				<Row>
@@ -177,7 +155,15 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row>
 					<Col>
-						<RadarChart captions={this.state.spider_web_labels} data={this.state.spider_web_data} />
+						<RadarChart
+							captions={this.state.spider_web_labels} data={this.state.spider_web_data}
+							options={{captionProps: () => ({
+								className: 'caption',
+								textAnchor: 'middle',
+								fontSize: 'small',
+								fontFamily: 'Segoe UI'
+							})}}
+						/>
 					</Col>
 				</Row>
 				<Row style={{paddingBottom: "2em", paddingTop: "2em"}}>
