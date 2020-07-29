@@ -72,3 +72,30 @@ function render_from_status(result) {
 	addon.render();
 }
 
+function get_evaulation_and_render( ) {
+	var issuekey = get('issueKey');
+
+	var constructed_url = `/get-issue-evaluation?jwt=${jwt_token}&issueKey=${encodeURI(issuekey)}`
+	console.log("constructed url: " + constructed_url);
+
+	$.ajax(constructed_url, {
+		"dataType": "json",
+		"error": function (xhr, textStatus, errorThrown) {
+			 console.error(errorThrown); 
+			 resultObject = { "status" : "error" }
+
+			 addon.render();
+		},
+		"success": function(data) {
+			 console.log(data); 
+
+
+			 resultObject = data;
+			 features = data.features;
+
+			 addon.render();
+
+		}
+	});
+
+}

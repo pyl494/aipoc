@@ -3,23 +3,32 @@ import Select from '@atlaskit/select';
 
 const control_low_risk = (provided, state) => ({ 
 	...provided,
-	backgroundColor: 'rgb(0, 135, 90)',
+	backgroundColor: 'rgb(0, 135, 90) !important',
 	borderRadius: '6px', 
 	color: state.isFocused  ? 'white' : 'black',
+	'&:hover': {
+		backgroundColor: 'rgb(0, 135, 90)'
+	}
 });
 
 const control_med_risk = (provided, state) => ({
 	...provided,
-	backgroundColor: 'rgb(255, 139, 0)',
+	backgroundColor: 'rgb(255, 139, 0) !important',
 	borderRadius: '6px', 
-	color: 'rgb(23, 43, 77)'
+	color: 'rgb(23, 43, 77)',
+	'&:hover': {
+		backgroundColor: 'rgb(255, 139, 0)'
+	}
 });
 
 const control_high_risk = (provided, state) => ({
 	...provided,
+	"&:hover": {
+		backgroundColor: 'rgb(222, 53, 11) !important' 
+	},
 	backgroundColor: 'rgb(222, 53, 11)',
 	borderRadius: '6px', 
-	color: 'white'
+	color: 'white',
 });
 
 
@@ -28,7 +37,6 @@ export default class EvaluationSelection extends Component {
 		super(props);
 
 		var control_style = control_low_risk;
-
 		switch (props.risk) {
 			case "Low Risk":
 				control_style = control_low_risk;
@@ -42,7 +50,9 @@ export default class EvaluationSelection extends Component {
 		}
 
 
+
 		this.state = {
+			webupdate: props.webupdate,
 			value: { label: "Evaluation: " + props.risk, value: 'risk-evader-eval' },
 
 			options: [
@@ -94,19 +104,33 @@ export default class EvaluationSelection extends Component {
 		switch (handle.value.value) {
 			case 'risk-evader-eval':
 				console.log(this.state.current_risk);
-				if (this.state.current_risk == "Low Risk") { this.state.styling.control = control_low_risk; }
-				else if (this.state.current_risk == "Medium Risk") { this.state.styling.control = control_med_risk; }
-				else if (this.state.current_risk == "High Risk") { this.state.styling.control == control_high_risk; }
+				if (this.state.current_risk == "Low Risk") { 
+					this.state.styling.control = control_low_risk; 
+					this.props.webupdate("rgb(0, 135, 90)");
+				}
+				else if (this.state.current_risk == "Medium Risk") { 
+					this.state.styling.control = control_med_risk;
+					this.props.webupdate("rgb(255, 139, 0)");	
+
+				 }
+				else if (this.state.current_risk == "High Risk") { 
+					this.state.styling.control == control_high_risk;
+					this.props.webupdate("rgb(222, 53, 11)");	
+
+				}
 				this.setState(value);
 				return;
 			case 'override-high':
 				this.state.styling.control = control_high_risk;
+				this.props.webupdate("rgb(222, 53, 11)");
 				break;
 			case 'override-medium':
 				this.state.styling.control = control_med_risk;
+				this.props.webupdate("rgb(255, 139, 0)");	
 				break;
 			case 'override-low':
 				this.state.styling.control = control_low_risk;
+				this.props.webupdate("rgb(0, 135, 90)");	
 				break;
 		}
 		

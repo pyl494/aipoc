@@ -31,29 +31,6 @@ export default class IssueGlancePanel extends Component {
 
 		console.log("features: "+features);
 
-		var to_set = { label: 'No Current Evaluation', value: 'def-no-eval' };
-		try {
-			switch(evaluation_setting) {
-				case 'risk-evader-eval':
-					to_set = { label: 'Use RiskEvader Evaluation', value: 'risk-evader-eval' };
-					break;
-				case 'override-high':
-					to_set = { label: 'Override: High Risk', value: 'override-high' };
-					break;
-				case 'override-medium':
-					to_set = { label: 'Override: Medium Risk', value: 'override-medium' };
-					break;
-				case 'override-low':
-					to_set = { label: 'Override: Low Risk', value: 'override-low' };
-					break;
-				case 'override-no-eval':
-					to_set = { label: 'Don\'t Evaluate', value: 'override-no-eval' };
-					break;
-
-			}
-		}
-		catch (ex) { console.log(ex); }
-
 		var do_show = false;
 		var lower_count = 0;
 		var medium_count = 0;
@@ -62,7 +39,7 @@ export default class IssueGlancePanel extends Component {
 		var risk_set = "";
 		var lozenge_set = "";
 		var web_colour = "rgb(0, 135, 90)";
-
+		console.log("resultObject:" + JSON.stringify(resultObject));
 		if (resultObject != null && resultObject != undefined && resultObject.hasOwnProperty("predictions")) {
 			do_show = true;
 			
@@ -91,11 +68,9 @@ export default class IssueGlancePanel extends Component {
 			}
 		}
 
-		set_lozange(risk_set, lozenge_set);
-
+		//set_lozange(risk_set, lozenge_set);
 
 		this.state = { 
-			value: to_set,
 			msg: "",
 			risk: risk_set,
 			lozenge_app: lozenge_set,
@@ -125,12 +100,28 @@ export default class IssueGlancePanel extends Component {
 		};
 		
 		this.expand = this.expand.bind(this);
+		this.updateWebColoring = this.updateWebColoring.bind(this);
 	}
 	
 	expand(){
         this.setState({
             isOpen: !this.state.isOpen
 		})
+	}
+
+	updateWebColoring(web_color) {
+		console.log(this.state.spider_web_data);
+
+		this.setState({ 
+			spider_web_data : [ 
+				{ 
+					data: this.state.spider_web_data[0].data,
+					meta: { color: web_color }
+				} 
+			]
+		});
+
+		console.log(this.state.spider_web_data);
 	}
 
 
@@ -145,7 +136,7 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row>
 					<Col>
-						<EvaluationSelect risk={this.state.risk}/>
+						<EvaluationSelect risk={this.state.risk} webupdate={this.updateWebColoring}/>
 					</Col>
 				</Row>
 				<Row style={{marginTop: "2em"}}>
