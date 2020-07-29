@@ -9,14 +9,14 @@ import { Container, Row, Col, Collapse } from 'reactstrap';
 export default class NumericFeatures extends Component {
 
 	render() {
-        var featureTable = Object.keys(features).map(function(key) {
+        var featureTable = features.map((feature) => {
             return(
                 <tr>
                     <td>
-                        {key}
+                        {feature.name}
                     </td>
                     <td>
-                        {features[key]}
+                        {feature.value}
                     </td>
                 </tr>
             )

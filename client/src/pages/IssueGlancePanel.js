@@ -29,7 +29,7 @@ export default class IssueGlancePanel extends Component {
 	constructor(props) {
 		super(props);
 
-		console.log("features: "+features);
+		console.log("Features: "+JSON.stringify(features[0]))
 
 		var to_set = { label: 'No Current Evaluation', value: 'def-no-eval' };
 		try {
@@ -93,7 +93,6 @@ export default class IssueGlancePanel extends Component {
 
 		set_lozange(risk_set, lozenge_set);
 
-
 		this.state = { 
 			value: to_set,
 			msg: "",
@@ -104,11 +103,11 @@ export default class IssueGlancePanel extends Component {
 			spider_web_data: [
 				{
 					data: {
-						feature_1: 0.7,
-						feature_2: 0.3,
-						feature_3: 0.2,
-						feature_4: 0.5,
-						feature_5: 0.9
+						feature_1: features[0].weight*10,
+						feature_2: features[1].weight*10,
+						feature_3: features[2].weight*10,
+						feature_4: features[3].weight*10,
+						feature_5: features[4].weight*10
 					},
 					meta: {
 						color: web_colour
@@ -116,11 +115,11 @@ export default class IssueGlancePanel extends Component {
 				}
 			],
 			spider_web_labels: {
-				feature_1: Object.keys(features)[0],
-				feature_2: Object.keys(features)[1],
-				feature_3: Object.keys(features)[2],
-				feature_4: Object.keys(features)[3],
-				feature_5: Object.keys(features)[4]
+				feature_1: features[0].name,
+				feature_2: features[1].name,
+				feature_3: features[2].name,
+				feature_4: features[3].name,
+				feature_5: features[4].name
 			}
 		};
 		

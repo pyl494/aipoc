@@ -119,16 +119,29 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
             return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
         })).then(hs_resp => {
 
-            console.log(Object.keys(hs_resp.data.features)[0])
-            console.log(hs_resp.data.features[Object.keys(hs_resp.data.features)[0]])
+            console.log(hs_resp.data.feature_weights);
 
-            var features = {};
+            var features = [];
 
             for(var i = 0; i<5; i++){
-                features[Object.keys(hs_resp.data.features)[i]] = hs_resp.data.features[Object.keys(hs_resp.data.features)[i]];
+
+                features[i] = {
+                    name: "name",
+                    value: "0",
+                    weight: "0"
+                }
+
+                //name
+                features[i]["name"] = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][0];
+
+                //value
+                features[i].value = hs_resp.data.features[features[i].name];
+                
+                //weight
+                features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
             }
 
-            console.log("Top 5 features: "+JSON.stringify(features));
+            console.log(JSON.stringify(features))
 
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
