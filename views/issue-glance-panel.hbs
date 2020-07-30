@@ -5,15 +5,7 @@
 </body>
 <script>
 	var jwt_token = "{{token}}";
-	var assignee_stat = "{{assignee_stats}}";
-	assignee_stat = JSON.parse(assignee_stat.replace(/&quot;/g,'"'));
-	var resultObject = "{{handshake_resp}}";
-	var evaluation_setting = "{{evaluation_setting}}"
-	resultObject = JSON.parse(resultObject.replace(/&quot;/g,'"'));
-	console.log("resultObject: " +JSON.stringify(resultObject));
-	console.log(assignee_stat);
-	console.log(jwt_token);
-	get_stored_status(render_from_status);
-	var features = "{{features}}";
-	features = JSON.parse(features.replace(/&quot;/g,'"'));
+	var resultObject = { };
+	var features = { };
+	get_evaulation_and_render();
 </script>

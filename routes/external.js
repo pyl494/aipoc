@@ -59,33 +59,121 @@ app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) 
     );
 });
 
+app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
 
-// This is an example route that's used by the default "generalPage" module.
-// Verify that the incoming request is authenticated with Atlassian Connect
-app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
-
-    var assignee_stats = [
-        { assignee: 'bob29', issuenum: 3, delays: 12 },
-        { assignee: 'hd125', issuenum: 6, delays: 1 },
-        { assignee: 'steve', issuenum: 4, delays: 0 }
-    ];
-
-    //var data = util.get_all_issues_project(app, addon, req, res, req.query.project);
-    var project = req.query.project;
     var issue_key = req.query.issueKey;
     var linked_issues = [];
-	var evaluation_setting = 'def-no-eval';
-    
-    /*
-    Todo:
-    Handshake process should go like this:
-    1) Send data explorer /handshake. 
-    2) If data explorer responds with 'Not found' or 'Not Up To Date', then do /add
-    3) Send data explorer /handshake
-    4) Get response/predictions
-    */
-	
+    var evaluation_setting = 'def-no-eval';
+
     util.get_issue_and_linked(app, addon, req, res, issue_key).then((issues_resp) => {
+        var issues = issues_resp.issues;
+        
+
+        // TODO: CONVERT THESE INTO DATE OBJECTS SO THEY CAN BE COMPARED
+        let last_updated = -1;
+        for (var i = 0; i < issues.length; i++) {
+            if (last_updated === -1){
+                if ('updated' in issues[i].fields)
+                    last_updated = issues[i].fields.updated;
+                else
+                    last_updated = issues[i].fields.created;
+            }
+            else{
+                if ('updated' in issues[i].fields && issues[i].fields.updated > last_updated)
+                    last_updated = issues[i].fields.updated;
+                else if (issues[i].fields.created > last_updated)
+                    last_updated = issues[i].fields.created;
+            }
+        }
+        
+        axios({
+            method: 'post',
+            url: 'http://localhost:8080/micro?type=add',
+            headers: {},
+            data: {
+                issues: issues
+            }
+            
+        }).then((() => {
+            //make handshake
+            return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
+        })).then(hs_resp => {
+
+            var features = [];
+
+            for(var i = 0; i<5; i++){
+
+                features[i] = {
+                    name: "name",
+                    value: "0",
+                    weight: "0"
+                }
+
+                //name
+                features[i]["name"] = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][0];
+
+                //value
+                features[i].value = hs_resp.data.features[features[i].name];
+                
+                //weight
+                features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
+            }
+            
+            var prediction_data = hs_resp.data.predictions;
+
+            if (prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
+                var risk_set = "";
+                var lozenge_set = "";
+                var lower_count = 0;
+                var medium_count = 0;
+                var high_count = 0;
+                for (const [x, y] of Object.entries(prediction_data)) { 
+                    if (y.toLowerCase() == "low") {lower_count++;}
+                    else if (y.toLowerCase() == "medium") {medium_count++;}
+                    else if (y.toLowerCase() == "high") { high_count++;}
+                }
+
+
+                if (lower_count > medium_count && lower_count > high_count) {
+                    risk_set = "Low Risk";
+                    lozenge_set = "success";
+
+                }
+                else if (medium_count > high_count) {
+                    risk_set = "Medium Risk";
+                    lozenge_set = "moved"
+                }
+                else {
+                    risk_set = "High Risk";
+                    lozenge_set = "removed"
+
+
+                }
+                util.set_issue_lozange(app, addon, req, res, issue_key, risk_set, lozenge_set);
+
+            }
+
+            var to_send = {
+                features : features,
+                predictions : hs_resp.data.predictions,
+                all : hs_resp.data
+            }
+            console.log(to_send);
+
+            res.send(JSON.stringify(to_send));
+        })
+
+    });
+    
+
+});
+
+
+
+app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
+    res.render('issue-glance-panel', { }); // Just gives it the page.
+	
+    /*util.get_issue_and_linked(app, addon, req, res, issue_key).then((issues_resp) => {
         var issues = issues_resp.issues;
         
 
@@ -141,7 +229,41 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
                 features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
             }
 
-            console.log(JSON.stringify(features))
+            console.log("Top 5 features: "+JSON.stringify(features));
+            var prediction_data = hs_resp.data.predictions;
+
+            if (prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
+                var risk_set = "";
+                var lozenge_set = "";
+                var lower_count = 0;
+                var medium_count = 0;
+                var high_count = 0;
+                for (const [x, y] of Object.entries(prediction_data)) { 
+                    if (y.toLowerCase() == "low") {lower_count++;}
+                    else if (y.toLowerCase() == "medium") {medium_count++;}
+                    else if (y.toLowerCase() == "high") { high_count++;}
+                }
+
+
+                if (lower_count > medium_count && lower_count > high_count) {
+                    risk_set = "Low Risk";
+                    lozenge_set = "success";
+
+                }
+                else if (medium_count > high_count) {
+                    risk_set = "Medium Risk";
+                    lozenge_set = "moved"
+                }
+                else {
+                    risk_set = "High Risk";
+                    lozenge_set = "removed"
+
+
+                }
+                util.set_issue_lozange(app, addon, req, res, issue_key, risk_set, lozenge_set);
+
+            }
+
 
             res.render('issue-glance-panel', {
                 title: 'Atlassian Connect',
@@ -152,7 +274,7 @@ app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
             })
         })
 
-    });
+    });*/
 });
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {

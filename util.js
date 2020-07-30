@@ -62,3 +62,28 @@ export async function get_all_issues_project(app, addon, req, res, project_key) 
 	return issues;
 
 }
+
+export async function set_issue_lozange(app, addon, req, res, issue_key, ltext, ltype) {
+
+	var modulekey = "my-issue-glance";
+
+	var construct_url = `/rest/api/3/issue/${issue_key}/properties/com.atlassian.jira.issue:${addon.key}:${modulekey}:status`;
+
+    var loz_obj = `{ "type": "lozenge", "value": { "label": "${ltext}", "type": "${ltype}" } }`;
+
+
+    var httpClient = addon.httpClient(req);
+
+    httpClient.put({
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "url": construct_url,
+            "body": loz_obj
+        },
+        function(err, response, body) {
+        }
+    );
+
+
+}
