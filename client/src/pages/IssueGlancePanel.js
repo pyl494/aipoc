@@ -86,6 +86,8 @@ export default class IssueGlancePanel extends Component {
 
 		//set_lozange(risk_set, lozenge_set);
 
+		var totalWeight = features[0].weight+features[1].weight+features[2].weight+features[3].weight+features[4].weight;
+
 		this.state = { 
 			msg: "",
 			risk: risk_set,
@@ -96,11 +98,11 @@ export default class IssueGlancePanel extends Component {
 			spider_web_data: [
 				{
 					data: {
-						feature_1: features[0].weight*10,
-						feature_2: features[1].weight*10,
-						feature_3: features[2].weight*10,
-						feature_4: features[3].weight*10,
-						feature_5: features[4].weight*10
+						feature_1: features[0].weight/totalWeight,
+						feature_2: features[1].weight/totalWeight,
+						feature_3: features[2].weight/totalWeight,
+						feature_4: features[3].weight/totalWeight,
+						feature_5: features[4].weight/totalWeight
 					},
 					meta: {
 						color: web_colour
@@ -148,7 +150,7 @@ export default class IssueGlancePanel extends Component {
 			<Container fluid>
 				<Row>
 					<Col>
-						<Tooltip content="Hello World"><h5>Risk Evaluation <QuestionCircleIcon size="small"/></h5></Tooltip>
+						<Tooltip content="Risk associated to this issues. Provided by machine learning or overrided."><h5>Risk Evaluation <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
 				</Row>
 				<Row>
@@ -158,7 +160,7 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row style={{marginTop: "2em"}}>
 					<Col>
-						<Tooltip content="Hello World"><h5>Risk Influence <QuestionCircleIcon size="small"/></h5></Tooltip>
+						<Tooltip content="Aspects of the project with the highest influence on risk."><h5>Risk Influence <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
 				</Row>
 				<Row>

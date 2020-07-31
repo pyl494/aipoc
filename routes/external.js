@@ -99,35 +99,34 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
             return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
         })).then(hs_resp => {
 
-            var features = [
-                { name: "BOB1", weight: 0.2 },
-                { name: "BOB2", weight: 0.2 },
-                { name: "BOB3", weight: 0.2 },
-                { name: "BOB4", weight: 0.2 },
-                { name: "BOB5", weight: 0.2 }
-            ];
 
-            // for(var i = 0; i<5; i++){
+            console.log(hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][0])
 
-            //     features[i] = {
-            //         name: "name",
-            //         value: "0",
-            //         weight: "0"
-            //     }
+            var features = [];
 
-            //     //name
-            //     features[i]["name"] = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][0];
+            for(var i = 0; i<5; i++){
 
-            //     //value
-            //     features[i].value = hs_resp.data.features[features[i].name];
-                
-            //     //weight
-            //     features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
-            // }
+                features[i] = {
+                    name: "name",
+                    value: "0",
+                    weight: "0"
+                }
+
+                //name
+                features[i]["name"] = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][0];
+
+                //value
+                features[i].value = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][1];
             
+                //weight
+                features[i].weight = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][2];
+            }
+
             var prediction_data = hs_resp.data.predictions;
 
 
+
+            console.log(features);
 
             if ((hs_resp.data.manual == null || hs_resp.data.manual == 'None') && prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
                 var risk_set = "";
