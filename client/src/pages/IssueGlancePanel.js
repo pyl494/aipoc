@@ -170,7 +170,7 @@ export default class IssueGlancePanel extends Component {
 							options={{captionProps: () => ({
 								className: 'caption',
 								textAnchor: 'middle',
-								fontSize: 'small',
+								fontSize: 'x-small',
 								fontFamily: 'Segoe UI'
 							})}}
 						/>

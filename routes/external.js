@@ -115,6 +115,15 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
                 //name
                 features[i]["name"] = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][0];
 
+                features[i]["name"] = features[i]["name"].replace('number', '#');
+                features[i]["name"] = features[i]["name"].replace(/_/g, ' ');
+                features[i]["name"] = features[i]["name"].replace(
+                    /\w\S*/g,
+                    function(txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    }
+                );
+
                 //value
                 features[i].value = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][1];
             
@@ -123,8 +132,6 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
             }
 
             var prediction_data = hs_resp.data.predictions;
-
-
 
             console.log(features);
 
@@ -179,109 +186,6 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
 
 app.get('/issue-glance-panel', addon.authenticate(), function (req, res) {
     res.render('issue-glance-panel', { }); // Just gives it the page.
-	
-    /*util.get_issue_and_linked(app, addon, req, res, issue_key).then((issues_resp) => {
-        var issues = issues_resp.issues;
-        
-
-        // TODO: CONVERT THESE INTO DATE OBJECTS SO THEY CAN BE COMPARED
-        let last_updated = -1;
-        for (var i = 0; i < issues.length; i++) {
-            if (last_updated === -1){
-                if ('updated' in issues[i].fields)
-                    last_updated = issues[i].fields.updated;
-                else
-                    last_updated = issues[i].fields.created;
-            }
-            else{
-                if ('updated' in issues[i].fields && issues[i].fields.updated > last_updated)
-                    last_updated = issues[i].fields.updated;
-                else if (issues[i].fields.created > last_updated)
-                    last_updated = issues[i].fields.created;
-            }
-        }
-		
-		axios({
-            method: 'post',
-            url: 'http://localhost:8080/micro?type=add',
-            headers: {},
-            data: {
-                issues: issues
-            }
-            
-        }).then((() => {
-            //make handshake
-            return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
-        })).then(hs_resp => {
-
-            console.log(hs_resp.data.feature_weights);
-
-            var features = [];
-
-            for(var i = 0; i<5; i++){
-
-                features[i] = {
-                    name: "name",
-                    value: "0",
-                    weight: "0"
-                }
-
-                //name
-                features[i]["name"] = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][0];
-
-                //value
-                features[i].value = hs_resp.data.features[features[i].name];
-                
-                //weight
-                features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
-            }
-
-            console.log("Top 5 features: "+JSON.stringify(features));
-            var prediction_data = hs_resp.data.predictions;
-
-            if (prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
-                var risk_set = "";
-                var lozenge_set = "";
-                var lower_count = 0;
-                var medium_count = 0;
-                var high_count = 0;
-                for (const [x, y] of Object.entries(prediction_data)) { 
-                    if (y.toLowerCase() == "low") {lower_count++;}
-                    else if (y.toLowerCase() == "medium") {medium_count++;}
-                    else if (y.toLowerCase() == "high") { high_count++;}
-                }
-
-
-                if (lower_count > medium_count && lower_count > high_count) {
-                    risk_set = "Low Risk";
-                    lozenge_set = "success";
-
-                }
-                else if (medium_count > high_count) {
-                    risk_set = "Medium Risk";
-                    lozenge_set = "moved"
-                }
-                else {
-                    risk_set = "High Risk";
-                    lozenge_set = "removed"
-
-
-                }
-                util.set_issue_lozange(app, addon, req, res, issue_key, risk_set, lozenge_set);
-
-            }
-
-
-            res.render('issue-glance-panel', {
-                title: 'Atlassian Connect',
-                assignee_stats: JSON.stringify(assignee_stats),
-                evaluation_setting: evaluation_setting,
-                handshake_resp: JSON.stringify(hs_resp.data),
-                features: JSON.stringify(features)
-            })
-        })
-
-    });*/
 });
 
 app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res) {
