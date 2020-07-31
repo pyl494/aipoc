@@ -99,29 +99,37 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
             return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
         })).then(hs_resp => {
 
-            var features = [];
+            var features = [
+                { name: "BOB1", weight: 0.2 },
+                { name: "BOB2", weight: 0.2 },
+                { name: "BOB3", weight: 0.2 },
+                { name: "BOB4", weight: 0.2 },
+                { name: "BOB5", weight: 0.2 }
+            ];
 
-            for(var i = 0; i<5; i++){
+            // for(var i = 0; i<5; i++){
 
-                features[i] = {
-                    name: "name",
-                    value: "0",
-                    weight: "0"
-                }
+            //     features[i] = {
+            //         name: "name",
+            //         value: "0",
+            //         weight: "0"
+            //     }
 
-                //name
-                features[i]["name"] = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][0];
+            //     //name
+            //     features[i]["name"] = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][0];
 
-                //value
-                features[i].value = hs_resp.data.features[features[i].name];
+            //     //value
+            //     features[i].value = hs_resp.data.features[features[i].name];
                 
-                //weight
-                features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
-            }
+            //     //weight
+            //     features[i].weight = hs_resp.data.feature_weights[Object.keys(hs_resp.data.feature_weights)[0]][i][1];
+            // }
             
             var prediction_data = hs_resp.data.predictions;
 
-            if (prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
+
+
+            if ((hs_resp.data.manual == null || hs_resp.data.manual == 'None') && prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
                 var risk_set = "";
                 var lozenge_set = "";
                 var lower_count = 0;
@@ -282,6 +290,7 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
 
     var override_label = req.query.label;
     var change_request = req.query.change_request;
+    var eval_risk = req.query.risk;
 
     console.log(`override_label: ${override_label}  change_request: ${change_request}`);
 
@@ -290,6 +299,7 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
     else if (override_label == 'override-medium') { label = 'medium'; }
     else if (override_label == 'override-low') { label = 'low'; }
     else if (override_label == 'override-no-eval') { label = 'None'; }
+    else if (override_label == 'risk-evader-eval') { label = 'None'; }
     else { var result = { status: "error", reason: "Unknown label: " + override_label }; res.send(JSON.stringify(result)); return; }
 
     var t_URL = `http://localhost:8080/micro?type=override&change_request=${change_request}&label=${label}`;
@@ -310,6 +320,29 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
 
     }).finally(() => {
         result = { status: 'ok' };
+        switch (override_label) {
+            case 'override-high':
+                util.set_issue_lozange(app, addon, req, res, change_request, 'Override: High Risk', "removed");
+                break;
+            case 'override-medium':
+                util.set_issue_lozange(app, addon, req, res, change_request, 'Override: Medium Risk', "moved");
+                break;
+            case 'override-low':
+                util.set_issue_lozange(app, addon, req, res, change_request, 'Override: Low Risk', "success");
+                break;
+            case 'risk-evader-eval':
+                if (eval_risk == 'low') {
+                    util.set_issue_lozange(app, addon, req, res, change_request, 'Low Risk', "success");
+                }
+                else if (eval_risk == 'medium') {
+                    util.set_issue_lozange(app, addon, req, res, change_request, 'Medium Risk', "moved");
+                }
+                else if (eval_risk == 'high') {
+                    util.set_issue_lozange(app, addon, req, res, change_request, 'High Risk', "removed");
+                }
+                break;
+        }
+
         res.send(JSON.stringify(result))
     });
     
