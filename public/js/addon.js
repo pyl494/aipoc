@@ -60285,7 +60285,7 @@ var IssueGlancePanel = function (_Component) {
 
 		var _this = _possibleConstructorReturn(this, (IssueGlancePanel.__proto__ || Object.getPrototypeOf(IssueGlancePanel)).call(this, props));
 
-		console.log("features: " + features);
+		console.log("Features: " + JSON.stringify(features[0]));
 
 		var do_show = false;
 		var lower_count = 0;
@@ -60347,6 +60347,20 @@ var IssueGlancePanel = function (_Component) {
 			}
 		}
 
+		if (resultObject.all.manual != null || resultObject.all.manual != "None") {
+			switch (resultObject.all.manual) {
+				case 'low':
+					web_colour = "rgb(0, 135, 90)";
+					break;
+				case 'medium':
+					web_colour = "rgb(255, 139, 0)";
+					break;
+				case 'high':
+					web_colour = "rgb(222, 53, 11)";
+					break;
+			}
+		}
+
 		//set_lozange(risk_set, lozenge_set);
 
 		_this.state = {
@@ -60355,24 +60369,25 @@ var IssueGlancePanel = function (_Component) {
 			lozenge_app: lozenge_set,
 			lozengeShow: do_show,
 			isOpen: false,
+			manual: resultObject.all.manual,
 			spider_web_data: [{
 				data: {
-					feature_1: 0.7,
-					feature_2: 0.3,
-					feature_3: 0.2,
-					feature_4: 0.5,
-					feature_5: 0.9
+					feature_1: features[0].weight * 10,
+					feature_2: features[1].weight * 10,
+					feature_3: features[2].weight * 10,
+					feature_4: features[3].weight * 10,
+					feature_5: features[4].weight * 10
 				},
 				meta: {
 					color: web_colour
 				}
 			}],
 			spider_web_labels: {
-				feature_1: Object.keys(features)[0],
-				feature_2: Object.keys(features)[1],
-				feature_3: Object.keys(features)[2],
-				feature_4: Object.keys(features)[3],
-				feature_5: Object.keys(features)[4]
+				feature_1: features[0].name,
+				feature_2: features[1].name,
+				feature_3: features[2].name,
+				feature_4: features[3].name,
+				feature_5: features[4].name
 			}
 		};
 
@@ -60432,7 +60447,7 @@ var IssueGlancePanel = function (_Component) {
 					_react2.default.createElement(
 						_reactstrap.Col,
 						null,
-						_react2.default.createElement(_EvaluationSelect2.default, { risk: this.state.risk, webupdate: this.updateWebColoring })
+						_react2.default.createElement(_EvaluationSelect2.default, { risk: this.state.risk, manual: this.state.manual, webupdate: this.updateWebColoring })
 					)
 				),
 				_react2.default.createElement(
@@ -80217,22 +80232,43 @@ var EvaluationSelection = function (_Component) {
 
 		var _this = _possibleConstructorReturn(this, (EvaluationSelection.__proto__ || Object.getPrototypeOf(EvaluationSelection)).call(this, props));
 
+		var from_manual;
 		var control_style = control_low_risk;
-		switch (props.risk) {
-			case "Low Risk":
-				control_style = control_low_risk;
-				break;
-			case "Medium Risk":
-				control_style = control_med_risk;
-				break;
-			case "High Risk":
-				control_style = control_high_risk;
-				break;
+
+		var _value = { label: "Evaluation: " + props.risk, value: 'risk-evader-eval' };
+
+		if (props.manual != null && props.manual != "None") {
+			switch (props.manual) {
+				case 'low':
+					_value = { label: 'Override: Low Risk', value: 'override-low' };
+					control_style = control_low_risk;
+					break;
+				case 'medium':
+					control_style = control_med_risk;
+					_value = { label: 'Override: Medium Risk', value: 'override-medium' };
+					break;
+				case 'high':
+					control_style = control_high_risk;
+					_value = { label: 'Override: High Risk', value: 'override-high' };
+					break;
+			}
+		} else {
+			switch (props.risk) {
+				case "Low Risk":
+					control_style = control_low_risk;
+					break;
+				case "Medium Risk":
+					control_style = control_med_risk;
+					break;
+				case "High Risk":
+					control_style = control_high_risk;
+					break;
+			}
 		}
 
 		_this.state = {
 			webupdate: props.webupdate,
-			value: { label: "Evaluation: " + props.risk, value: 'risk-evader-eval' },
+			value: _value,
 
 			options: [{
 				label: 'Machine Learning',
@@ -80262,7 +80298,8 @@ var EvaluationSelection = function (_Component) {
 				}
 			},
 
-			current_risk: props.risk
+			current_risk: props.risk,
+			eval_risk: props.risk
 		};
 
 		_this.handleChange = _this.handleChange.bind(_this);
@@ -80274,6 +80311,18 @@ var EvaluationSelection = function (_Component) {
 		value: function handleChange(value) {
 			var handle = JSON.parse(JSON.stringify(value)); // This is to extract the object.
 			var panel = this;
+
+			var crisk = "low";
+
+			switch (this.state.eval_risk) {
+				case 'Low Risk':
+					crisk = 'low';break;
+				case 'Medium Risk':
+					crisk = 'medium';break;
+				case 'High Risk':
+					crisk = 'high';break;
+			}
+
 			console.log(handle.value.value);
 			switch (handle.value.value) {
 				case 'risk-evader-eval':
@@ -80289,7 +80338,7 @@ var EvaluationSelection = function (_Component) {
 						this.props.webupdate("rgb(222, 53, 11)");
 					}
 					this.setState(value);
-					return;
+					break;
 				case 'override-high':
 					this.state.styling.control = control_high_risk;
 					this.props.webupdate("rgb(222, 53, 11)");
@@ -80304,7 +80353,7 @@ var EvaluationSelection = function (_Component) {
 					break;
 			}
 
-			$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&change_request=" + get("issueKey") + "&label=" + handle.value.value, {
+			$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&change_request=" + get("issueKey") + "&label=" + handle.value.value + "&risk=" + crisk, {
 				"error": function error(xhr, textStatus, errorThrown) {},
 				"success": function success(data) {
 					console.log(data);
@@ -86575,19 +86624,19 @@ var NumericFeatures = function (_Component) {
     _createClass(NumericFeatures, [{
         key: 'render',
         value: function render() {
-            var featureTable = Object.keys(features).map(function (key) {
+            var featureTable = features.map(function (feature) {
                 return _react2.default.createElement(
                     'tr',
                     null,
                     _react2.default.createElement(
                         'td',
                         null,
-                        key
+                        feature.name
                     ),
                     _react2.default.createElement(
                         'td',
                         null,
-                        features[key]
+                        feature.value
                     )
                 );
             });

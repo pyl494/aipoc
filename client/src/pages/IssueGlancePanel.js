@@ -68,6 +68,22 @@ export default class IssueGlancePanel extends Component {
 			}
 		}
 
+		if (resultObject.all.manual != null || resultObject.all.manual != "None") {
+			switch (resultObject.all.manual) {
+				case 'low':
+					web_colour = "rgb(0, 135, 90)";
+					break;
+				case 'medium':
+					web_colour = "rgb(255, 139, 0)";
+					break;
+				case 'high':
+					web_colour = "rgb(222, 53, 11)";
+					break;
+			}
+
+		}
+
+
 		//set_lozange(risk_set, lozenge_set);
 
 		this.state = { 
@@ -76,6 +92,7 @@ export default class IssueGlancePanel extends Component {
 			lozenge_app: lozenge_set,
 			lozengeShow: do_show,
 			isOpen: false,
+			manual: resultObject.all.manual,
 			spider_web_data: [
 				{
 					data: {
@@ -136,7 +153,7 @@ export default class IssueGlancePanel extends Component {
 				</Row>
 				<Row>
 					<Col>
-						<EvaluationSelect risk={this.state.risk} webupdate={this.updateWebColoring}/>
+						<EvaluationSelect risk={this.state.risk} manual={this.state.manual} webupdate={this.updateWebColoring}/>
 					</Col>
 				</Row>
 				<Row style={{marginTop: "2em"}}>

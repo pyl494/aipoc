@@ -35,25 +35,47 @@ const control_high_risk = (provided, state) => ({
 export default class EvaluationSelection extends Component {
 	constructor(props) {
 		super(props);
-
+		var from_manual
 		var control_style = control_low_risk;
-		switch (props.risk) {
-			case "Low Risk":
-				control_style = control_low_risk;
-				break;
-			case "Medium Risk":
-				control_style = control_med_risk;
-				break;
-			case "High Risk":
-				control_style = control_high_risk;
-				break;
+
+		var _value = { label: "Evaluation: " + props.risk, value: 'risk-evader-eval' };
+
+		if (props.manual != null && props.manual != "None") {
+			switch (props.manual) {
+				case 'low':
+					_value = { label: 'Override: Low Risk', value: 'override-low' };
+					control_style = control_low_risk;
+					break;
+				case 'medium':
+					control_style = control_med_risk;
+					_value = { label: 'Override: Medium Risk', value: 'override-medium' };
+					break;
+				case 'high':
+					control_style = control_high_risk;
+					_value = { label: 'Override: High Risk', value: 'override-high' };
+					break;
+			}
+
+		}
+		else {
+			switch (props.risk) {
+				case "Low Risk":
+					control_style = control_low_risk;
+					break;
+				case "Medium Risk":
+					control_style = control_med_risk;
+					break;
+				case "High Risk":
+					control_style = control_high_risk;
+					break;
+			}
 		}
 
 
 
 		this.state = {
 			webupdate: props.webupdate,
-			value: { label: "Evaluation: " + props.risk, value: 'risk-evader-eval' },
+			value: _value,
 
 			options: [
 				{
@@ -90,7 +112,8 @@ export default class EvaluationSelection extends Component {
 				})
 		  	},
 
-		  	current_risk: props.risk
+		  	current_risk: props.risk,
+		  	eval_risk: props.risk
 		}
 
 
@@ -100,6 +123,15 @@ export default class EvaluationSelection extends Component {
 	handleChange(value) {
 		var handle = JSON.parse(JSON.stringify(value)); // This is to extract the object.
 		var panel = this;
+
+		var crisk = "low";
+
+		switch (this.state.eval_risk) {
+			case 'Low Risk': crisk = 'low'; break;
+			case 'Medium Risk': crisk = 'medium'; break;
+			case 'High Risk': crisk = 'high'; break;
+		}
+
 		console.log(handle.value.value);
 		switch (handle.value.value) {
 			case 'risk-evader-eval':
@@ -119,7 +151,7 @@ export default class EvaluationSelection extends Component {
 
 				}
 				this.setState(value);
-				return;
+				break;
 			case 'override-high':
 				this.state.styling.control = control_high_risk;
 				this.props.webupdate("rgb(222, 53, 11)");
@@ -134,7 +166,7 @@ export default class EvaluationSelection extends Component {
 				break;
 		}
 		
-		$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&change_request=" + get("issueKey") + "&label=" + handle.value.value, {
+		$.ajax("/set-issue-evaluation-setting?jwt=" + jwt_token + "&change_request=" + get("issueKey") + "&label=" + handle.value.value + "&risk=" + crisk, {
 			"error": function (xhr, textStatus, errorThrown) {
 
 			},
