@@ -2,7 +2,7 @@
     "key": "risk-evader-app-cam",
     "name": "RiskEvader-cam",
     "description": "",
-    "baseUrl": "https://3ac5e02b7a30.ngrok.io",
+    "baseUrl": "https://8ad37fbc7b5a.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
