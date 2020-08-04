@@ -22,6 +22,11 @@ app.get('/', function (req, res) {
     });
 });
 
+app.post('/webhook-issue-created', addon.authenticate(), function(req, res) {
+    console.log('webhook-issue-created fired!');
+    console.log(req.body.issue);
+});
+
 app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) {
 
     var issueKey = req.param('issueKey');

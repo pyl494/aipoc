@@ -2,7 +2,7 @@
     "key": "risk-evader-app-cam",
     "name": "RiskEvader-cam",
     "description": "",
-    "baseUrl": "https://8ad37fbc7b5a.ngrok.io",
+    "baseUrl": "https://679b42e44236.ngrok.io",
     "authentication": {
         "type": "jwt"
     },
@@ -17,6 +17,7 @@
         "postUpdateUrl": "/hello-world"
     },
     "modules": {
+
         "jiraIssueGlances": [
             {
               "conditions": [
@@ -92,7 +93,14 @@
 
         ],
         "webhooks": [
-
+            {
+                "event": "jira:issue_created",
+                "url": "/webhook-issue-created",
+                "excludeBody": false,
+                "filter": "",
+                "propertyKeys": [
+                ]
+            }
         ]
     }
 }
