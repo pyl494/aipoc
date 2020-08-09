@@ -8,3 +8,4 @@ store.db
 credentials.json
 *addon.js
 public/js/addon.js
+database.db
