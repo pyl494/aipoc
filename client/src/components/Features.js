@@ -13,7 +13,7 @@ export default class Features extends Component {
 
 	render() {
 		return (
-            <Container style={{paddingTop: "2em"}}>
+            <Container>
                 <NumericFeatures data={features} />
             </Container>
 		)
