@@ -5,18 +5,36 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Row, Col, Collapse } from 'reactstrap';
 
+//atlassian
+import Tooltip, { TooltipPrimitive } from '@atlaskit/tooltip';
+import QuestionCircleIcon from '@atlaskit/icon/glyph/question-circle';
+
 
 export default class NumericFeatures extends Component {
 
 	render() {
-        var featureTable = features.map((feature) => {
+        var letters = ['A', 'B', 'C', 'D', 'E'];
+
+        var featureTable = features.map((feature, key) => {
             return(
-                <tr>
+                <tr align="center">
                     <td>
-                        {feature.name}
+                        <Container>
+                            <Row>
+                                <Col xs={1}>
+                                    {letters[key]}
+                                </Col>
+                                <Col>
+                                    <a href="">{feature.name}</a>
+                                </Col>
+                            </Row>
+                        </Container>
                     </td>
                     <td>
-                        {feature.value}
+                        <Container fluid={true}>
+                            {feature.value}
+                        </Container>
+                                               
                     </td>
                 </tr>
             )
@@ -26,7 +44,7 @@ export default class NumericFeatures extends Component {
             <table>
                 <tbody>
                     <tr>
-                        <th>Feature Name</th> 
+                        <th>Feature</th> 
                         <th>Value</th>                       
                     </tr>
                     {featureTable}

@@ -110,11 +110,11 @@ export default class IssueGlancePanel extends Component {
 				}
 			],
 			spider_web_labels: {
-				feature_1: features[0].name,
-				feature_2: features[1].name,
-				feature_3: features[2].name,
-				feature_4: features[3].name,
-				feature_5: features[4].name
+				feature_1: "A",
+				feature_2: "B",
+				feature_3: "C",
+				feature_4: "D",
+				feature_5: "E"
 			}
 		};
 		
@@ -122,12 +122,24 @@ export default class IssueGlancePanel extends Component {
 		this.updateWebColoring = this.updateWebColoring.bind(this);
 	}
 	
+	
 	expand(){
         this.setState({
             isOpen: !this.state.isOpen
 		})
+		/*
+		<Button onClick={this.expand}>
+									{this.state.isOpen ?
+										<div>Hide Features</div> :
+										<div>Show Features</div>
+									}
+						</Button>
+						<Collapse isOpen={this.state.isOpen}>
+							
+						</Collapse>
+						*/
 	}
-
+	
 	updateWebColoring(web_color) {
 		console.log(this.state.spider_web_data);
 
@@ -147,8 +159,8 @@ export default class IssueGlancePanel extends Component {
 	
 	render() {
 		return (
-			<Container fluid>
-				<Row>
+			<Container fluid={true}>
+				<Row style={{paddingTop: "2em"}}>
 					<Col>
 						<Tooltip content="Risk associated to this issues. Provided by machine learning or overrided."><h5>Risk Evaluation <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
@@ -163,30 +175,34 @@ export default class IssueGlancePanel extends Component {
 						<Tooltip content="Aspects of the project with the highest influence on risk."><h5>Risk Influence <QuestionCircleIcon size="small"/></h5></Tooltip>
 					</Col>
 				</Row>
-				<Row>
+				<Row align="center">
 					<Col>
 						<RadarChart
 							captions={this.state.spider_web_labels} data={this.state.spider_web_data}
 							options={{captionProps: () => ({
 								className: 'caption',
 								textAnchor: 'middle',
-								fontSize: 'x-small',
+								fontSize: 'medium',
 								fontFamily: 'Segoe UI'
 							})}}
 						/>
 					</Col>
 				</Row>
-				<Row style={{paddingBottom: "2em", paddingTop: "2em"}}>
+				<Row>
 					<Col>
-						<Button onClick={this.expand}>
-									{this.state.isOpen ?
-										<div>Hide Features</div> :
-										<div>Show Features</div>
-									}
-						</Button>
-						<Collapse isOpen={this.state.isOpen}>
-							<Features />
-						</Collapse>
+						<Features />
+					</Col>
+				</Row>
+				<Row style={{paddingBottom: "2em"}, {marginTop: "2em"}}>
+					<Col>
+							<h5>Risk Management</h5>
+							<ul>
+								<li>A: lorum ipsum</li>
+								<li>B: lorum ipsum</li>
+								<li>C: lorum ipsum</li>
+								<li>D: lorum ipsum</li>
+								<li>E: lorum ipsum</li>
+							</ul>
 					</Col>
 				</Row>
 			</Container>

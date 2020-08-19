@@ -146,7 +146,7 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
         })).then(hs_resp => {
 
 
-            console.log(hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][0])
+            console.log(hs_resp.data.features)
 
             var features = [];
 
@@ -161,7 +161,16 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
                 //name
                 features[i]["name"] = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][0];
 
-                features[i]["name"] = features[i]["name"].replace('number', '#');
+                features[i]["name"] = features[i]["name"].replace('number_of', '');
+
+                /*
+                
+                features[i]["name"] = features[i]["name"].replace('name', '');
+                features[i]["name"] = features[i]["name"].replace('sum', '');
+                features[i]["name"] = features[i]["name"].replace('stdev', '');
+                features[i]["name"] = features[i]["name"].replace('mean', '');
+                */
+
                 features[i]["name"] = features[i]["name"].replace(/_/g, ' ');
                 features[i]["name"] = features[i]["name"].replace(
                     /\w\S*/g,
