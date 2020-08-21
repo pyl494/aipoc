@@ -11,6 +11,7 @@ const path = require('path');
 const dbutil = require('../dbutil.js');
 const dbmanage = require('../dbmanage.js');
 var issuequeue = require('../issuequeue.js')
+const evaluation_functions = require('../evaluation.js');
 
 
  // Root route. This route will serve the `atlassian-connect.json` unless the
@@ -54,150 +55,9 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     
     // Incase we have to clear it for whatever reason.
     issuequeue[issue.self] = setTimeout(
-        async function do_eval(self, clientKey, issueKey, addon) {
-            // do evaluation logic here.
-            dbmanage.remove_from_queue(self);
-            // Get the issue and it's linked.
-
-            var httpClient = addon.httpClient({
-                clientKey: clientKey
-            });
-
-            var issue_and_linked = [];
-
-            console.log(`${timewait}, ${issue.self}, ${req.context.clientKey}, ${issue.key}`);
-
-            const result = await new Promise((resolve, reject) => {
-                httpClient.get({
-                    "headers": {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-                    "url": "/rest/api/3/search?jql=" + encodeURI(`issueKey = ${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names"
-                },
-                function(err, response, body) {
-                    if (err) { 
-                        console.log(response.statusCode + ": " + err);
-                        res.send("Error: " + response.statusCode + ": " + err);
-                        resolve();
-                    }
-                    else {
-                        console.log("Body" + body);
-                        issue_and_linked = JSON.parse(body);
-                        resolve();
-                    }
-                });
-            });
-
-            var issues = issue_and_linked.issues;
-
-            let last_updated = -1;
-            for (var i = 0; i < issues.length; i++) {
-                if (last_updated === -1){
-                    if ('updated' in issues[i].fields)
-                        last_updated = issues[i].fields.updated;
-                    else
-                        last_updated = issues[i].fields.created;
-                }
-                else{
-                    if ('updated' in issues[i].fields && issues[i].fields.updated > last_updated)
-                        last_updated = issues[i].fields.updated;
-                    else if (issues[i].fields.created > last_updated)
-                        last_updated = issues[i].fields.created;
-                }
-            }
-
-            const axios_add_resp = await axios({ 
-                method: 'post',
-                url: 'http://localhost:8080/micro?type=add',
-                headers: {},
-                data: {
-                    issues: issues
-                }
-            });
-
-            const axios_hs_resp = await axios({ 
-                method: 'post',
-                url: `http://localhost:8080/micro?type=handshake&change_request=${issueKey}&updated=${last_updated}`,
-                headers: {},
-                data: {
-                    issues: issues
-                }
-			});
-
-			var handshake_features = axios_hs_resp.features;
-
-			var features = [];
-			for(var i = 0; i<5; i++){
-
-                features[i] = {
-                    name: "name",
-                    value: "0",
-                    weight: "0"
-                }
-
-                //name
-                features[i]["name"] = axios_hs_resp.data.features[Object.keys(axios_hs_resp.data.features)[0]][i][0];
-
-                features[i]["name"] = features[i]["name"].replace('number_of', '');
-
-                /*
-                
-                features[i]["name"] = features[i]["name"].replace('name', '');
-                features[i]["name"] = features[i]["name"].replace('sum', '');
-                features[i]["name"] = features[i]["name"].replace('stdev', '');
-                features[i]["name"] = features[i]["name"].replace('mean', '');
-                */
-
-                features[i]["name"] = features[i]["name"].replace(/_/g, ' ');
-                features[i]["name"] = features[i]["name"].replace(
-                    /\w\S*/g,
-                    function(txt) {
-                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                    }
-                );
-				features[i].value = axios_hs_resp.data.features[Object.keys(axios_hs_resp.data.features)[0]][i][1];
-            
-                //weight
-                features[i].weight = axios_hs_resp.data.features[Object.keys(axios_hs_resp.data.features)[0]][i][2];
-			}
-			var prediction_data = axios_hs_resp.data.predictions;
-
-			if ((axios_hs_resp.data.manual == null || axios_hs_resp.data.manual == 'None') && prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
-                var risk_set = "";
-                var lozenge_set = "";
-                var lower_count = 0;
-                var medium_count = 0;
-                var high_count = 0;
-                for (const [x, y] of Object.entries(prediction_data)) { 
-                    if (y.toLowerCase() == "low") {lower_count++;}
-                    else if (y.toLowerCase() == "medium") {medium_count++;}
-                    else if (y.toLowerCase() == "high") { high_count++;}
-                }
-
-
-                if (lower_count > medium_count && lower_count > high_count) {
-                    risk_set = "Low Risk";
-                    lozenge_set = "success";
-
-                }
-                else if (medium_count > high_count) {
-                    risk_set = "Medium Risk";
-                    lozenge_set = "moved"
-                }
-                else {
-                    risk_set = "High Risk";
-                    lozenge_set = "removed"
-
-
-                }
-                util.set_issue_lozange(app, addon, req, res, issue_key, risk_set, lozenge_set);
-
-			}
-			
-            
-
-    }, timewait, issue.self, req.context.clientKey, issue.key, addon);
+		evaluation_functions.delayed_evaluation
+		, timewait, issue, req.context.clientKey, addon
+	);
 
 
 });
@@ -352,7 +212,7 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
 
 
                 }
-                util.set_issue_lozange(app, addon, req, res, issue_key, risk_set, lozenge_set);
+                util.set_issue_lozange(addon, req.context.clientKey, res, issue_key, risk_set, lozenge_set);
 
             }
 

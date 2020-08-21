@@ -63,7 +63,7 @@ export async function get_all_issues_project(app, addon, req, res, project_key) 
 
 }
 
-export async function set_issue_lozange(app, addon, req, res, issue_key, ltext, ltype) {
+export async function set_issue_lozange(addon, clientKey, issue_key, ltext, ltype) {
 
 	var modulekey = "my-issue-glance";
 
@@ -72,7 +72,9 @@ export async function set_issue_lozange(app, addon, req, res, issue_key, ltext, 
     var loz_obj = `{ "type": "lozenge", "value": { "label": "${ltext}", "type": "${ltype}" } }`;
 
 
-    var httpClient = addon.httpClient(req);
+    var httpClient = addon.httpClient({
+		clientKey: clientKey
+	});
 
     httpClient.put({
             "headers": {

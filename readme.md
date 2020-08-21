@@ -4,11 +4,12 @@
 * [x] animate show features expand
 * [] style spider graph font
 * [x] tooltips
-* [] spider chart mapping from backend
-* [] lozenge override
-* [] Drop down from lozenge instead of risk evaluation
-* [] Ledgend or clearer labels for spider graph
+* [x] spider chart mapping from backend
+* [x] lozenge override
+* [x] Drop down from lozenge instead of risk evaluation
+* [x] Ledgend or clearer labels for spider graph
 * [] Mapping features to components
+* [] Automated delayed evaluation on change request creation.
 
 # Getting Started:
 
