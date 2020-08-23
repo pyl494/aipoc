@@ -9,7 +9,8 @@ export async function create_tables() {
 		await dbutil.createTable(
 			SQL`CREATE TABLE evalqueue (
 				self TEXT PRIMARY KEY,
-				issuekey TEXT NOT NULL,
+				issueKey TEXT NOT NULL,
+				clientKey TEXT NOT NULL,
 				timestamp INTEGER NOT NULL
 			);`
 		);
@@ -34,11 +35,11 @@ export async function insert_into_his(_self, issuekey) {
 
 }
 
-export async function insert_into_queue(self, issuekey, timestamp) {
+export async function insert_into_queue(self, issueKey, clientKey, timestamp) {
 
 	return await dbutil.insert(SQL`INSERT INTO 
-		evalqueue (self, issuekey, timestamp) 
-		VALUES (${self}, ${issuekey}, ${timestamp});`);
+		evalqueue (self, issuekey, clientKey, timestamp) 
+		VALUES (${self}, ${issueKey}, ${clientKey}, ${timestamp});`);
 
 }
 

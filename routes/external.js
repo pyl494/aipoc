@@ -1,21 +1,20 @@
 "use strict";
 
+// modules
 const axios = require('axios');
 const moment = require('moment');
-const util = require('../util.js');
 
+// base 
 const fs = require('fs');
 const path = require('path');
 
-
-const dbutil = require('../dbutil.js');
+// written code
 const dbmanage = require('../dbmanage.js');
 var issuequeue = require('../issuequeue.js')
 const evaluation_functions = require('../evaluation.js');
+const util = require('../util.js');
 
 
- // Root route. This route will serve the `atlassian-connect.json` unless the
-// documentation url inside `atlassian-connect.json` is set
 app.get('/', function (req, res) {
     res.format({
         // If the request content-type is text-html, it will decide which to serve up
@@ -32,12 +31,14 @@ app.get('/', function (req, res) {
 
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
     console.log('webhook-issue-created fired!');
+	
+	const issue = req.body.issue;
 
-    const issue = req.body.issue;
     // Filter out non-change request issues.
     //if (!issue.fields.issuetype.name.toLowerCase().includes('change')) { return; }
     // Have we received a webhook response for this issue before.
-    // This is to stop duplicate webhook responses.
+	// This is to stop duplicate webhook responses.
+	
     const has_issue_hooked = await dbmanage.is_in_webhook_history(issue.self);
 
     if (has_issue_hooked) { return; }
@@ -51,7 +52,7 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     var timewait = ctimestamp - timewait;
 
     // Insert into the Queue
-    dbmanage.insert_into_queue(issue.self, issue.key, ctimestamp);
+    dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctimestamp);
     
     // Incase we have to clear it for whatever reason.
     issuequeue[issue.self] = setTimeout(
