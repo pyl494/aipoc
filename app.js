@@ -29,6 +29,8 @@ import helmet from 'helmet';
 // Routes live here; this is the C in MVC
 import routes from './routes';
 
+const dbmanage = require('./dbmanage.js');
+
 // Bootstrap Express and atlassian-connect-express
 const app = express();
 const addon = ace(app);
@@ -79,6 +81,7 @@ hbs.registerHelper('furl', function(url){ return app.locals.furl(url); });
 // Mount the static resource dir
 app.use(express.static(staticDir));
 
+dbmanage.create_tables();
 // Atlassian security policy requirements
 // http://go.atlassian.com/security-requirements-for-cloud-apps
 app.use(helmet.noCache());
