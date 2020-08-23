@@ -120,15 +120,14 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
                 //name
                 features[i]["name"] = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][0];
 
-                features[i]["name"] = features[i]["name"].replace('number_of', '');
-
-                /*
-                
-                features[i]["name"] = features[i]["name"].replace('name', '');
-                features[i]["name"] = features[i]["name"].replace('sum', '');
-                features[i]["name"] = features[i]["name"].replace('stdev', '');
-                features[i]["name"] = features[i]["name"].replace('mean', '');
-                */
+                //store help text according to these
+                features[i]["name"] = features[i]["name"].replace('number_of', 'number of');
+                //features[i]["name"] = features[i]["name"].replace('name', '');
+                features[i]["name"] = features[i]["name"].replace('sum', '(sum)');
+                features[i]["name"] = features[i]["name"].replace('stdev', '(stdev)');
+                features[i]["name"] = features[i]["name"].replace('mean', '(mean)');
+                features[i]["name"] = features[i]["name"].replace('median', '(median)');
+                features[i]["name"] = features[i]["name"].replace('variance', '(variance)');
 
                 features[i]["name"] = features[i]["name"].replace(/_/g, ' ');
                 features[i]["name"] = features[i]["name"].replace(
@@ -192,8 +191,44 @@ app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
         })
 
     });
-    
 
+   
+    /*test comment */
+    /*
+    const bodyData = `{
+        "body": {
+          "type": "doc",
+          "version": 1,
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "text": "Enter Risk Level Here",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
+      }`;
+    
+    var httpClient = addon.httpClient(req);
+
+    httpClient.post({
+        "headers": {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        "url": '/rest/api/3/issue/'+issue_key+ '/comment',
+        "body": bodyData
+    },
+    function(err, response, body) {
+        console.log("error: "+err);
+        console.log("response: "+JSON.stringify(response));
+        console.log("body: "+body);
+    });
+    */
 });
 
 

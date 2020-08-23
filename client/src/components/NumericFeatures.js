@@ -25,7 +25,7 @@ export default class NumericFeatures extends Component {
                                     {letters[key]}
                                 </Col>
                                 <Col>
-                                    <a href="">{feature.name}</a>
+                                    {feature.name}
                                 </Col>
                             </Row>
                         </Container>

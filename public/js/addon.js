@@ -60327,8 +60327,6 @@ var IssueGlancePanel = function (_Component) {
 
 		var _this = _possibleConstructorReturn(this, (IssueGlancePanel.__proto__ || Object.getPrototypeOf(IssueGlancePanel)).call(this, props));
 
-		console.log("Features: " + JSON.stringify(features[0]));
-
 		var do_show = false;
 		var lower_count = 0;
 		var medium_count = 0;
@@ -60337,7 +60335,6 @@ var IssueGlancePanel = function (_Component) {
 		var risk_set = "";
 		var lozenge_set = "";
 		var web_colour = "rgb(0, 135, 90)";
-		console.log("resultObject:" + JSON.stringify(resultObject));
 		if (resultObject != null && resultObject != undefined && resultObject.hasOwnProperty("predictions")) {
 			do_show = true;
 
@@ -60446,17 +60443,6 @@ var IssueGlancePanel = function (_Component) {
 			this.setState({
 				isOpen: !this.state.isOpen
 			});
-			/*
-   <Button onClick={this.expand}>
-   							{this.state.isOpen ?
-   								<div>Hide Features</div> :
-   								<div>Show Features</div>
-   							}
-   				</Button>
-   				<Collapse isOpen={this.state.isOpen}>
-   					
-   				</Collapse>
-   				*/
 		}
 	}, {
 		key: 'updateWebColoring',
@@ -60549,48 +60535,6 @@ var IssueGlancePanel = function (_Component) {
 						_reactstrap.Col,
 						null,
 						_react2.default.createElement(_Features2.default, null)
-					)
-				),
-				_react2.default.createElement(
-					_reactstrap.Row,
-					{ style: ({ paddingBottom: "2em" }, { marginTop: "2em" }) },
-					_react2.default.createElement(
-						_reactstrap.Col,
-						null,
-						_react2.default.createElement(
-							'h5',
-							null,
-							'Risk Management'
-						),
-						_react2.default.createElement(
-							'ul',
-							null,
-							_react2.default.createElement(
-								'li',
-								null,
-								'A: lorum ipsum'
-							),
-							_react2.default.createElement(
-								'li',
-								null,
-								'B: lorum ipsum'
-							),
-							_react2.default.createElement(
-								'li',
-								null,
-								'C: lorum ipsum'
-							),
-							_react2.default.createElement(
-								'li',
-								null,
-								'D: lorum ipsum'
-							),
-							_react2.default.createElement(
-								'li',
-								null,
-								'E: lorum ipsum'
-							)
-						)
 					)
 				)
 			);
@@ -86696,11 +86640,7 @@ var NumericFeatures = function (_Component) {
                                 _react2.default.createElement(
                                     _reactstrap.Col,
                                     null,
-                                    _react2.default.createElement(
-                                        'a',
-                                        { href: '' },
-                                        feature.name
-                                    )
+                                    feature.name
                                 )
                             )
                         )

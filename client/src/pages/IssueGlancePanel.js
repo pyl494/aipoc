@@ -29,8 +29,6 @@ export default class IssueGlancePanel extends Component {
 	constructor(props) {
 		super(props);
 
-		console.log("Features: "+JSON.stringify(features[0]))
-
 		var do_show = false;
 		var lower_count = 0;
 		var medium_count = 0;
@@ -39,7 +37,6 @@ export default class IssueGlancePanel extends Component {
 		var risk_set = "";
 		var lozenge_set = "";
 		var web_colour = "rgb(0, 135, 90)";
-		console.log("resultObject:" + JSON.stringify(resultObject));
 		if (resultObject != null && resultObject != undefined && resultObject.hasOwnProperty("predictions")) {
 			do_show = true;
 			
@@ -127,17 +124,6 @@ export default class IssueGlancePanel extends Component {
         this.setState({
             isOpen: !this.state.isOpen
 		})
-		/*
-		<Button onClick={this.expand}>
-									{this.state.isOpen ?
-										<div>Hide Features</div> :
-										<div>Show Features</div>
-									}
-						</Button>
-						<Collapse isOpen={this.state.isOpen}>
-							
-						</Collapse>
-						*/
 	}
 	
 	updateWebColoring(web_color) {
@@ -191,18 +177,6 @@ export default class IssueGlancePanel extends Component {
 				<Row>
 					<Col>
 						<Features />
-					</Col>
-				</Row>
-				<Row style={{paddingBottom: "2em"}, {marginTop: "2em"}}>
-					<Col>
-							<h5>Risk Management</h5>
-							<ul>
-								<li>A: lorum ipsum</li>
-								<li>B: lorum ipsum</li>
-								<li>C: lorum ipsum</li>
-								<li>D: lorum ipsum</li>
-								<li>E: lorum ipsum</li>
-							</ul>
 					</Col>
 				</Row>
 			</Container>

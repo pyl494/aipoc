@@ -1,5 +1,3 @@
-
-
 export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 	var issue_and_linked = [];
 
@@ -13,7 +11,7 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			"url": "/rest/api/3/search?jql=" + encodeURI(`issueKey = ${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names"
+			"url": "/rest/api/3/search?jql=" + encodeURI(`issueKey=${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names"
 		},
 		function(err, response, body) {
 			if (err) { 
