@@ -4,6 +4,7 @@ const SQL = require("sql-template-strings");
 export async function create_tables() {
 	const evalQueueTableExists = await dbutil.tableExists('evalqueue');
 	const evalHistoryTableExists = await dbutil.tableExists('webhook_history');
+	const userConfigTableExists = await dbutil.tableExists('userconfig');
 
 	if (!evalQueueTableExists) {
 		await dbutil.createTable(
@@ -23,6 +24,17 @@ export async function create_tables() {
 				issuekey TEXT NOT NULL 
 			);`
 		);
+	}
+
+	if (!userConfigTableExists) {
+		await dbutil.createTable(
+			SQL`CREATE TABLE userconfig (
+				clientKey TEXT PRIMARY KEY,
+				auto_eval_delay INTEGER NOT NULL,
+				auto_eval_enabled BOOLEAN NOT NULL,
+				auto_eval_risk_comment TEXT NOT NULL
+			);
+		`);
 	}
 
 }

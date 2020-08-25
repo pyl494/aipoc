@@ -86,7 +86,6 @@ async function delayed_evaluation(issue, clientKey, addon) {
 		evaluation_lozange_set(addon, clientKey, issueKey, risk);
 
 		if (risk == 'High Risk') {
-		
 			evaluation.createComment(
 				addon, clientKey, issueKey, JSON.stringify(comment)
 			);
@@ -137,9 +136,10 @@ async function get_last_updated(issues) {
 
 // Extracts the feature breakdown from the list of features given.
 async function get_feature_breakdown(features) {
-	if (check.isDefined(features)) {
+	if (!check.isDefined(features)) {
 		return null;
 	}
+
 	var feature_breakdown = [];
 
 	for(var i = 0; i<5; i++) {
@@ -153,15 +153,14 @@ async function get_feature_breakdown(features) {
 		//name
 		feature_breakdown[i]["name"] = features[Object.keys(features)[0]][i][0];
 
-		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('number_of', '');
-
-		/*
-		
-		features[i]["name"] = features[i]["name"].replace('name', '');
-		features[i]["name"] = features[i]["name"].replace('sum', '');
-		features[i]["name"] = features[i]["name"].replace('stdev', '');
-		features[i]["name"] = features[i]["name"].replace('mean', '');
-		*/
+		//store help text according to these
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('number_of', 'number of');
+		//features[i]["name"] = features[i]["name"].replace('name', '');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('sum', '(sum)');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('stdev', '(stdev)');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('mean', '(mean)');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('median', '(median)');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('variance', '(variance)');
 
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace(/_/g, ' ');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace(
@@ -170,11 +169,15 @@ async function get_feature_breakdown(features) {
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
 		);
+
+		//value
 		feature_breakdown[i].value = features[Object.keys(features)[0]][i][1];
 	
 		//weight
 		feature_breakdown[i].weight = features[Object.keys(features)[0]][i][2];
 	}
+
+	console.log("Feature breakdown: " + feature_breakdown);
 
 	return feature_breakdown;
 }
@@ -255,7 +258,6 @@ async function evaluation_lozange_set_from_data(addon, clientKey, prediction_dat
 	}
 
 	util.set_issue_lozange(addon, clientKey, issue_key, risk_set, lozenge_set);
-
 }
 
 /** 
@@ -288,5 +290,8 @@ async function createComment (addon, clientKey, issueKey, commentData) {
 
 module.exports = {
 	delayed_evaluation: delayed_evaluation,
-	createComment: createComment
+	createComment: createComment,
+	get_feature_breakdown: get_feature_breakdown,
+	get_last_updated: get_last_updated,
+	evaluation_lozange_set_from_data: evaluation_lozange_set_from_data
 }

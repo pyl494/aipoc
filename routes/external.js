@@ -34,11 +34,11 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
 	
 	const issue = req.body.issue;
 
-    // Filter out non-change request issues.
-    //if (!issue.fields.issuetype.name.toLowerCase().includes('change')) { return; }
+	// Filter out non-change request issues.
+	if (!issue.fields.issuetype.name.toLowerCase().includes('change')) { return; }
+
     // Have we received a webhook response for this issue before.
 	// This is to stop duplicate webhook responses.
-	
     const has_issue_hooked = await dbmanage.is_in_webhook_history(issue.self);
 
     if (has_issue_hooked) { return; }
@@ -100,171 +100,47 @@ app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) 
     );
 });
 
-app.get('/get-issue-evaluation', addon.authenticate(), function(req, res) {
+app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) {
 
-    var issue_key = req.query.issueKey;
-    var linked_issues = [];
-    var evaluation_setting = 'def-no-eval';
+	var issue_key = req.query.issueKey;
 
-    util.get_issue_and_linked(app, addon, req, res, issue_key).then((issues_resp) => {
-        var issues = issues_resp.issues;
-        
+	var issues = await util.get_issue_and_linked(app, addon, req, res, issue_key);
+	issues = issues.issues;
+	var last_updated = await evaluation_functions.get_last_updated(issues);
 
-        // TODO: CONVERT THESE INTO DATE OBJECTS SO THEY CAN BE COMPARED
-        let last_updated = -1;
-        for (var i = 0; i < issues.length; i++) {
-            if (last_updated === -1){
-                if ('updated' in issues[i].fields)
-                    last_updated = issues[i].fields.updated;
-                else
-                    last_updated = issues[i].fields.created;
-            }
-            else{
-                if ('updated' in issues[i].fields && issues[i].fields.updated > last_updated)
-                    last_updated = issues[i].fields.updated;
-                else if (issues[i].fields.created > last_updated)
-                    last_updated = issues[i].fields.created;
-            }
-        }
-        
-        axios({
-            method: 'post',
-            url: 'http://localhost:8080/micro?type=add',
-            headers: {},
-            data: {
-                issues: issues
-            }
-            
-        }).then((() => {
-            //make handshake
-            return axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`, {})  
-        })).then(hs_resp => {
+	console.log(last_updated);
+	
+	const add_resp = await axios({
+		method: 'post',
+		url: 'http://localhost:8080/micro?type=add',
+		headers: {},
+		data: {
+			issues: issues
+		}
+	});
 
+	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`) 
 
-            console.log(hs_resp.data.features)
+	var features = await evaluation_functions.get_feature_breakdown(hs_resp.data.features);
 
-            var features = [];
+	var prediction_data = hs_resp.data.predictions;
 
-            for(var i = 0; i<5; i++){
+	if ((hs_resp.data.manual == null || hs_resp.data.manual == 'None') && prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
+		try {
+			evaluation_functions.evaluation_lozange_set_from_data(addon, req.context.clientKey, prediction_data, issue_key);
+		}
+		catch (err) {
+			console.error(err);
+		}
+	}
 
-                features[i] = {
-                    name: "name",
-                    value: "0",
-                    weight: "0"
-                }
+	var to_send = {
+		features : features,
+		predictions : hs_resp.data.predictions,
+		all : hs_resp.data
+	}
 
-                //name
-                features[i]["name"] = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][0];
-
-                //store help text according to these
-                features[i]["name"] = features[i]["name"].replace('number_of', 'number of');
-                //features[i]["name"] = features[i]["name"].replace('name', '');
-                features[i]["name"] = features[i]["name"].replace('sum', '(sum)');
-                features[i]["name"] = features[i]["name"].replace('stdev', '(stdev)');
-                features[i]["name"] = features[i]["name"].replace('mean', '(mean)');
-                features[i]["name"] = features[i]["name"].replace('median', '(median)');
-                features[i]["name"] = features[i]["name"].replace('variance', '(variance)');
-
-                features[i]["name"] = features[i]["name"].replace(/_/g, ' ');
-                features[i]["name"] = features[i]["name"].replace(
-                    /\w\S*/g,
-                    function(txt) {
-                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                    }
-                );
-
-                //value
-                features[i].value = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][1];
-            
-                //weight
-                features[i].weight = hs_resp.data.features[Object.keys(hs_resp.data.features)[0]][i][2];
-            }
-
-            var prediction_data = hs_resp.data.predictions;
-
-            console.log(features);
-
-            if ((hs_resp.data.manual == null || hs_resp.data.manual == 'None') && prediction_data !== null && typeof(prediction_data) !== 'undefined' && prediction_data != '') {
-                var risk_set = "";
-                var lozenge_set = "";
-                var lower_count = 0;
-                var medium_count = 0;
-                var high_count = 0;
-                for (const [x, y] of Object.entries(prediction_data)) { 
-                    if (y.toLowerCase() == "low") {lower_count++;}
-                    else if (y.toLowerCase() == "medium") {medium_count++;}
-                    else if (y.toLowerCase() == "high") { high_count++;}
-                }
-
-
-                if (lower_count > medium_count && lower_count > high_count) {
-                    risk_set = "Low Risk";
-                    lozenge_set = "success";
-
-                }
-                else if (medium_count > high_count) {
-                    risk_set = "Medium Risk";
-                    lozenge_set = "moved"
-                }
-                else {
-                    risk_set = "High Risk";
-                    lozenge_set = "removed"
-
-
-                }
-                util.set_issue_lozange(addon, req.context.clientKey, res, issue_key, risk_set, lozenge_set);
-
-            }
-
-            var to_send = {
-                features : features,
-                predictions : hs_resp.data.predictions,
-                all : hs_resp.data
-            }
-            console.log(to_send);
-
-            res.send(JSON.stringify(to_send));
-        })
-
-    });
-
-   
-    /*test comment */
-    /*
-    const bodyData = `{
-        "body": {
-          "type": "doc",
-          "version": 1,
-          "content": [
-            {
-              "type": "paragraph",
-              "content": [
-                {
-                  "text": "Enter Risk Level Here",
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        }
-      }`;
-    
-    var httpClient = addon.httpClient(req);
-
-    httpClient.post({
-        "headers": {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        "url": '/rest/api/3/issue/'+issue_key+ '/comment',
-        "body": bodyData
-    },
-    function(err, response, body) {
-        console.log("error: "+err);
-        console.log("response: "+JSON.stringify(response));
-        console.log("body: "+body);
-    });
-    */
+	res.send(JSON.stringify(to_send));
 });
 
 
