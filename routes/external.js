@@ -39,7 +39,7 @@ app.get('/configure', addon.authenticate(), async function(req, res) {
 app.get('/get-config-settings', addon.authenticate(), async function(req, res) {
 	console.log(req.context.clientKey);
 
-	const db_client_config = dbutil.selectOne(SQL`
+	const db_client_config = await dbutil.selectOne(SQL`
 		SELECT * FROM userconfig
 		WHERE clientKey = ${req.context.clientKey};
 	`);
@@ -50,10 +50,60 @@ app.get('/get-config-settings', addon.authenticate(), async function(req, res) {
 }); 
 
 app.post('/set-config-settings', addon.authenticate(), async function(req, res) {
+	const clientKey = req.context.clientKey;
 
-	console.log(req.body);
-	
-	res.send("ok!");
+	const db_client_config = await dbutil.selectOne(SQL`
+		SELECT * FROM userconfig
+		WHERE clientKey = ${clientKey};
+	`);
+
+	console.log(typeof(req.body));
+
+	const config = req.body;
+	var result = {
+		success: true,
+		reason: ""
+	}
+
+	if (db_client_config.found) {
+		const db_update = await dbutil.modify(SQL`
+			UPDATE userconfig
+			SET auto_eval_delay = ${config.auto_eval_delay}, 
+			auto_eval_enabled = ${config.auto_eval_on_update}, 
+			auto_eval_risk_level_warn  = ${config.auto_eval_risk_level_warn},
+			auto_eval_comment = ${config.auto_eval_comment},
+			auto_eval_on_update = ${config.auto_eval_on_update}
+			WHERE clientKey = ${clientKey};
+		`);
+
+		if (db_update.success) {
+			res.send(JSON.stringify(result));
+			return result;
+		}
+		else {
+			result.success = false;
+			result.reason = "Failed to update data in the database.";
+			res.send(JSON.stringify(result));
+			return result;
+		}
+	}
+	else {
+		const db_insert = await dbutil.modify(SQL`
+			INSERT INTO userconfig (clientKey, auto_eval_delay, auto_eval_enabled, auto_eval_risk_level_warn, auto_eval_comment, auto_eval_on_update)
+			VALUES (${clientKey}, ${config.auto_eval_delay}, ${config.auto_eval_on_update}, ${config.auto_eval_risk_level_warn}, ${config.auto_eval_comment}, ${config.auto_eval_on_update});
+		`);
+
+		if (db_insert.success) {
+			res.send(JSON.stringify(result));
+			return result;
+		}
+		else {
+			result.success = false;
+			result.reason = "Failed to insert new data into the database.";
+			res.send(JSON.stringify(result));
+			return result;
+		}
+	}
 });
 
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
@@ -71,7 +121,7 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     if (has_issue_hooked) { return; }
 	dbmanage.insert_into_his(issue.self, issue.key);
 
-	const db_client_config = dbutil.selectOne(SQL`
+	const db_client_config = await dbutil.selectOne(SQL`
 		SELECT * FROM userconfig
 		WHERE clientKey = ${req.context.clientKey};
 	`);

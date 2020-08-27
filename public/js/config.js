@@ -57,16 +57,8 @@ function apply_changes() {
 	console.log(send);
 
 
-	$.post(`/set-config-settings?jwt=${jwt_token}`, send ,{
-		"error": 
-			function (xhr, textStatus, errorThrown) { 
-				console.error(errorThrown); 
-			},
-		"success": 
-			function(data) { 
-				console.log(data);
-			}
-	});
+	$.post(`/set-config-settings?jwt=${jwt_token}`, send)
+	.done( function(data) { console.log(data); } );
 }
 
 on_load();
