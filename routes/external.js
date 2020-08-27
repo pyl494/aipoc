@@ -3,6 +3,7 @@
 // modules
 const axios = require('axios');
 const moment = require('moment');
+const SQL = require ('sql-template-strings');
 
 // base 
 const fs = require('fs');
@@ -13,7 +14,9 @@ const dbmanage = require('../dbmanage.js');
 var issuequeue = require('../issuequeue.js')
 const evaluation_functions = require('../evaluation.js');
 const util = require('../util.js');
+const dbutil = require('../dbutil.js');
 
+const default_client_settings = require('../default_client_config.json');
 
 app.get('/', function (req, res) {
     res.format({
@@ -29,6 +32,10 @@ app.get('/', function (req, res) {
     });
 });
 
+app.get('/configure', addon.authenticate(), async function(req, res) {
+	res.render('configure', { });
+});
+
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
     console.log('webhook-issue-created fired!');
 	
@@ -42,12 +49,22 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     const has_issue_hooked = await dbmanage.is_in_webhook_history(issue.self);
 
     if (has_issue_hooked) { return; }
-    dbmanage.insert_into_his(issue.self, issue.key);
+	dbmanage.insert_into_his(issue.self, issue.key);
+
+	const db_client_config = dbutil.selectOne(SQL`
+		SELECT * FROM userconfig
+		WHERE clientKey = ${issue.context.clientKey};
+	`);
+
+	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
+
+	if (!client_config.auto_eval_enabled) { return; }
+
 
     // Time calculation
     var current_time = moment();
-    var timewait = current_time.valueOf();
-    current_time.add(3, 'm');
+	var timewait = current_time.valueOf();
+    current_time.add(client_config.auto_eval_delay, 'm');
     var ctimestamp = current_time.valueOf();
     var timewait = ctimestamp - timewait;
 

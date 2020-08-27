@@ -32,7 +32,9 @@ export async function create_tables() {
 				clientKey TEXT PRIMARY KEY,
 				auto_eval_delay INTEGER NOT NULL,
 				auto_eval_enabled BOOLEAN NOT NULL,
-				auto_eval_risk_comment TEXT NOT NULL
+				auto_eval_risk_level_warn TEXT NOT NULL,
+				auto_eval_comment TEXT NOT NULL,
+				auto_eval_on_update BOOLEAN NOT NULL
 			);
 		`);
 	}
