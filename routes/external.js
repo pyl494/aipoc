@@ -47,6 +47,13 @@ app.get('/get-config-settings', addon.authenticate(), async function(req, res) {
 	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
 
 	res.send(JSON.stringify(client_config));
+}); 
+
+app.post('/set-config-settings', addon.authenticate(), async function(req, res) {
+
+	console.log(req.body);
+	
+	res.send("ok!");
 });
 
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {

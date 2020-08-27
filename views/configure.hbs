@@ -53,10 +53,10 @@
 			<label for="automatic-evaluation-risk-level-comment">Comment on Risk Level: </label>
 			<select class="select" id="automatic-evaluation-risk-level-comment"
 				name="automatic-evaluation-risk-level-comment">
-				<option>High Risk</option>
-				<option>Medium Risk</option>
-				<option>Low Risk</option>
-				<option>No Comment</option>
+				<option value="High Risk">High Risk</option>
+				<option value="Medium Risk">Medium Risk</option>
+				<option value="Low Risk">Low Risk</option>
+				<option value= "No Comment">No Comment</option>
 			</select>
 		</div>
 		<div class="field-group">
@@ -65,7 +65,7 @@
 				placeholder=""></textarea>
 		</div>
 		<hr/>
-		<button class="aui-button">Apply Changes</button>
+		<button class="aui-button" id="apply-changes-button" onClick="apply_changes();">Apply Changes</button>
         </section>
     </div>
 </div>
