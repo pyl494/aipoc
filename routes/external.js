@@ -36,6 +36,19 @@ app.get('/configure', addon.authenticate(), async function(req, res) {
 	res.render('configure', { });
 });
 
+app.get('/get-config-settings', addon.authenticate(), async function(req, res) {
+	console.log(req.context.clientKey);
+
+	const db_client_config = dbutil.selectOne(SQL`
+		SELECT * FROM userconfig
+		WHERE clientKey = ${req.context.clientKey};
+	`);
+
+	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
+
+	res.send(JSON.stringify(client_config));
+});
+
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
     console.log('webhook-issue-created fired!');
 	
@@ -53,7 +66,7 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
 
 	const db_client_config = dbutil.selectOne(SQL`
 		SELECT * FROM userconfig
-		WHERE clientKey = ${issue.context.clientKey};
+		WHERE clientKey = ${req.context.clientKey};
 	`);
 
 	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;

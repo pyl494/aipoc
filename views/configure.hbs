@@ -1,24 +1,71 @@
-{{!< layout}}
-<header class="aui-page-header">
-  <div class="aui-page-header-inner">
-    <div class="aui-page-header-main intro-header">
-      <h1>Configuration</h1>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="ap-local-base-url" content="{{localBaseUrl}}">
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="//unpkg.com/@atlaskit/css-reset@1.0.2" />
+	<link rel="stylesheet" href="//unpkg.com/@atlaskit/reduced-ui-pack@2.5.0" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.9.0-alpha007/css/aui.css" media="all">
+	<link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.9.0-alpha007/css/aui-experimental.css" media="all">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" />
+	<script src="//aui-cdn.atlassian.com/aui-adg/5.9.0-alpha007/js/aui.js"/>
+<script src="//cdn.rawgit.com/jrburke/almond/0.3.0/almond.js"/>
+<script src="//aui-cdn.atlassian.com/aui-adg/5.9.0-alpha007/js/aui-experimental.js"/>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="{{furl '/css/addon.css'}}" />
+	<script src="{{hostScriptUrl}}" type="text/javascript"></script>
+	<script> var jwt_token = "{{token}}"; </script>
+	  <script src="/js/config.js"></script>
+</head>
 
-      <p class="subtitle">Configure your addon</p>
-    </div>
-  </div>
+<header class="aui-page-header">
+	<div class="aui-page-header-inner">
+		<div class="aui-page-header-main intro-header">
+			<h1>RiskEvader Configuration</h1>
+		</div>
+	</div>
 </header>
 
-<div class="aui-page-panel main-panel">
-  <div class="aui-page-panel-inner">
-    <section class="aui-page-panel-item">
-      <div class="aui-group">
-        <div class="aui-item">
-          <p>
-            blah blah
-          </p>
-        </div>
-      </div>
-    </section>
-  </div>
+<div class="aui-page-panel">
+    <div class="aui-page-panel-inner">
+        <section class="aui-page-panel-content">
+		<h2>
+			Automatic Evaluation
+		</h2>
+		<hr/>
+		<div class="checkbox">
+			<input class="checkbox" type="checkbox" name="automatic-evaluation-enabled-on-creation"
+				id="automatic-evaluation-enabled-on-creation">
+			<label for="automatic-evaluation-enabled-on-creation">On Issue Creation Enabled</label>
+		</div>
+
+		<div class="checkbox">
+			<input class="checkbox" type="checkbox" name="automatic-evaluation-enabled-on-update"
+				id="automatic-evaluation-enabled-on-update">
+			<label for="automatic-evaluation-enabled-on-update">On Issue Creation Update</label>
+		</div>
+		<hr/>
+			<label for="automatic-evaluation-delay">Delay Time (minutes):</label>
+			<input type="number" id="automatic-evaluation-delay" name="automatic-evaluation-delay" min="0" max="30" value="10">
+		<hr/>
+		<div>
+			<label for="automatic-evaluation-risk-level-comment">Comment on Risk Level: </label>
+			<select class="select" id="automatic-evaluation-risk-level-comment"
+				name="automatic-evaluation-risk-level-comment">
+				<option>High Risk</option>
+				<option>Medium Risk</option>
+				<option>Low Risk</option>
+				<option>No Comment</option>
+			</select>
+		</div>
+		<div class="field-group">
+			<label for="automatic-evaluation-comment">Comment Text</label>
+			<textarea class="textarea" name="automatic-evaluation-comment" id="automatic-evaluation-comment"
+				placeholder=""></textarea>
+		</div>
+		<hr/>
+		<button class="aui-button">Apply Changes</button>
+        </section>
+    </div>
 </div>
