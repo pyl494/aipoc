@@ -5,6 +5,6 @@
 	"auto_eval_update_reset_delay": true,
 	"auto_eval_update_linked": 2,
 	"auto_eval_risk_level_warn": "High Risk Only",
-	"auto_eval_comment": "",
+	"auto_eval_comment": "Hello! This change request issue was automatically evaluated and found to have a high risk assessment. For further information see RiskEvader on the right panel.",
 	"auto_eval_on_update": false
 }
