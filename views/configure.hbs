@@ -16,7 +16,6 @@
 	<link rel="stylesheet" href="{{furl '/css/addon.css'}}" />
 	<script src="{{hostScriptUrl}}" type="text/javascript"></script>
 	<script> var jwt_token = "{{token}}"; </script>
-	  <script src="/js/config.js"></script>
 </head>
 
 <header class="aui-page-header">
@@ -45,17 +44,28 @@
 				id="automatic-evaluation-enabled-on-update">
 			<label for="automatic-evaluation-enabled-on-update">On Issue Creation Update</label>
 		</div>
+
+		<div class="checkbox">
+			<input class="checkbox" type="checkbox" name="automatic-evaluation-update-reset-delay"
+				id="automatic-evaluation-update-reset-delay">
+			<label for="automatic-evaluation-update-reset-delay">Reset Evaluation Delay on Update</label>
+		</div>
+
 		<hr/>
-			<label for="automatic-evaluation-delay">Delay Time (minutes):</label>
-			<input type="number" id="automatic-evaluation-delay" name="automatic-evaluation-delay" min="0" max="30" value="10">
+			<label for="automatic-evaluation-delay-create">Delay Time on Create (minutes):</label>
+			<input type="number" id="automatic-evaluation-delay-create" name="automatic-evaluation-delay-create" min="0" max="30" value="10">
+			<label for="automatic-evaluation-delay-update">Delay Time on Update (minutes):</label>
+			<input type="number" id="automatic-evaluation-delay-update" name="automatic-evaluation-delay-update" min="0" max="30" value="10">
 		<hr/>
 		<div>
 			<label for="automatic-evaluation-risk-level-comment">Comment on Risk Level: </label>
 			<select class="select" id="automatic-evaluation-risk-level-comment"
 				name="automatic-evaluation-risk-level-comment">
-				<option value="High Risk">High Risk</option>
-				<option value="Medium Risk">Medium Risk</option>
-				<option value="Low Risk">Low Risk</option>
+				<option value="High Risk Only">High Risk Only</option>
+				<option value="Medium Risk Only">Medium Risk Only</option>
+				<option value="Medium Risk Above">Medium Risk and Above</option>
+				<option value="Low Risk Only">Low Risk Only</option>
+				<option value="Low Risk Above">Low Risk Above</option>
 				<option value= "No Comment">No Comment</option>
 			</select>
 		</div>
@@ -66,6 +76,9 @@
 		</div>
 		<hr/>
 		<button class="aui-button" id="apply-changes-button" onClick="apply_changes();">Apply Changes</button>
+		<div class="spinner-border" id="apply-changes-spinner" role="status" style="display:none;"> </div>
         </section>
     </div>
 </div>
+
+<script src="/js/config.js"></script>

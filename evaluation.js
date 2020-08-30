@@ -6,6 +6,9 @@ const dbmanage = require('./dbmanage.js');
 var issuequeue = require('./issuequeue.js');
 const { reject, resolve } = require('bluebird');
 const check = require('./check.js');
+const risk_levels = require('./risk.js');
+
+const default_client_settings = require('./default_client_config.json');
 
 // Gets an issue, the issues linked to it, using the REST API given a clientKey for authentication.
 async function get_issue_and_linked ( issueKey, clientKey, addon ) {
@@ -41,14 +44,20 @@ async function get_issue_and_linked ( issueKey, clientKey, addon ) {
 
 // For app.post('/webhook-issue-created') -> setTimeout()
 async function delayed_evaluation(issue, clientKey, addon) {
-	console.log (`delayed_evaluation fired`);
 	var issueKey = issue.key;
 	var issueSelf = issue.self;
 
+	const db_client_config = await dbutil.selectOne(SQL`
+		SELECT * FROM userconfig
+		WHERE clientKey = ${req.context.clientKey};
+	`);
+
+	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
+
 	dbmanage.remove_from_queue(issueSelf);
+	issuequeue.queue[issue.self] = null;
 
 	var issues = await get_issue_and_linked(issueKey, clientKey, addon);
-	console.log(issues);
 
 	var last_updated = await get_last_updated(issues);
 
@@ -85,30 +94,13 @@ async function delayed_evaluation(issue, clientKey, addon) {
 
 		evaluation_lozange_set(addon, clientKey, issueKey, risk);
 
-		if (risk == 'High Risk') {
-			evaluation.createComment(
-				addon, clientKey, issueKey, JSON.stringify(comment)
-			);
+		if (check_risk_comment_level(risk, client_config)) {
+			const comment_data = get_comment_data(client_config);
+			create_comment(addon, clientKey, issueKey, comment_data);
 		}
-
 	}
 }
 
-const comment = {
-	"body": {
-		"type": "doc",
-		"version": 1,
-		"content": [
-			{ "type": "paragraph", 
-			"content": [
-				{
-					"text": "Hello! This change request issue was automatically evaluated and found to have a high risk assessment. For further information see RiskEvader on the right panel.",
-					"type": "text"
-				}
-			]
-		}]
-	}
-};
 
 async function get_evaluation(issue) {
 
@@ -261,11 +253,11 @@ async function evaluation_lozange_set_from_data(addon, clientKey, prediction_dat
 }
 
 /** 
- * @param commentData {string}
+ * @param commentData {object}
  * @param issueKey {string}
  * @param clientKey {string}
 */
-async function createComment (addon, clientKey, issueKey, commentData) {
+async function create_comment (addon, clientKey, issueKey, commentData) {
 	 await new Promise((reject, resolve) => {
 		var httpClient = addon.httpClient( {clientKey: clientKey });
 
@@ -288,9 +280,60 @@ async function createComment (addon, clientKey, issueKey, commentData) {
 	});
 }
 
+/** 
+ * @param risk {string}
+*/
+function check_risk_comment_level(risk, config) {
+	switch(config.auto_eval_risk_level_warn) {
+		case "High Risk Only":
+			if (risk == "High Risk") {
+				return true;
+			}
+			return false;
+		case "Medium Risk Only":
+			if (risk == "Medium Risk") {
+				return true;
+			}
+			return false;
+		case "Low Risk Only":
+			if (risk == "Low Risk") {
+				return true;
+			}
+			return false;
+		case "Medium Risk Above":
+			return risk_levels[risk] >= 1;
+		case "Low Risk Above":
+			return true;
+		case "No Comment":
+			return false;
+	}
+	return true;
+
+}
+
+function get_comment_data(config) {
+	const comment = {
+		"body": {
+			"type": "doc",
+			"version": 1,
+			"content": [
+				{ "type": "paragraph", 
+				"content": [
+					{
+						"text": config.auto_eval_comment,
+						"type": "text"
+					}
+				]
+			}]
+		}
+	};
+
+	return comment;
+}
+
 module.exports = {
 	delayed_evaluation: delayed_evaluation,
-	createComment: createComment,
+	create_comment: create_comment,
 	get_feature_breakdown: get_feature_breakdown,
 	get_last_updated: get_last_updated,
 	evaluation_lozange_set_from_data: evaluation_lozange_set_from_data

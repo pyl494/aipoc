@@ -60,6 +60,10 @@ app.post('/set-config-settings', addon.authenticate(), async function(req, res) 
 	console.log(typeof(req.body));
 
 	const config = req.body;
+
+	config.auto_eval_delay_create = util.clamp(config.auto_eval_delay_create, 0, 30);
+	config.auto_eval_delay_update = util.clamp(config.auto_eval_delay_update, 0, 30);
+
 	var result = {
 		success: true,
 		reason: ""
@@ -68,7 +72,8 @@ app.post('/set-config-settings', addon.authenticate(), async function(req, res) 
 	if (db_client_config.found) {
 		const db_update = await dbutil.modify(SQL`
 			UPDATE userconfig
-			SET auto_eval_delay = ${config.auto_eval_delay}, 
+			SET auto_eval_delay_create = ${config.auto_eval_delay_create}, 
+			auto_eval_delay_update = ${config.auto_eval_delay_update},
 			auto_eval_enabled = ${config.auto_eval_on_update}, 
 			auto_eval_risk_level_warn  = ${config.auto_eval_risk_level_warn},
 			auto_eval_comment = ${config.auto_eval_comment},
@@ -89,8 +94,8 @@ app.post('/set-config-settings', addon.authenticate(), async function(req, res) 
 	}
 	else {
 		const db_insert = await dbutil.modify(SQL`
-			INSERT INTO userconfig (clientKey, auto_eval_delay, auto_eval_enabled, auto_eval_risk_level_warn, auto_eval_comment, auto_eval_on_update)
-			VALUES (${clientKey}, ${config.auto_eval_delay}, ${config.auto_eval_on_update}, ${config.auto_eval_risk_level_warn}, ${config.auto_eval_comment}, ${config.auto_eval_on_update});
+			INSERT INTO userconfig (clientKey, auto_eval_delay_create, auto_eval_delay_update, auto_eval_enabled, auto_eval_risk_level_warn, auto_eval_comment, auto_eval_on_update)
+			VALUES (${clientKey}, ${config.auto_eval_delay_create}, ${config.auto_eval_delay_update}, ${config.auto_eval_on_update}, ${config.auto_eval_risk_level_warn}, ${config.auto_eval_comment}, ${config.auto_eval_on_update});
 		`);
 
 		if (db_insert.success) {
@@ -134,7 +139,7 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     // Time calculation
     var current_time = moment();
 	var timewait = current_time.valueOf();
-    current_time.add(client_config.auto_eval_delay, 'm');
+    current_time.add(client_config.auto_eval_delay_create, 'm');
     var ctimestamp = current_time.valueOf();
     var timewait = ctimestamp - timewait;
 
@@ -142,11 +147,27 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctimestamp);
     
     // Incase we have to clear it for whatever reason.
-    issuequeue[issue.self] = setTimeout(
+    issuequeue.queue[issue.self] = setTimeout(
 		evaluation_functions.delayed_evaluation
 		, timewait, issue, req.context.clientKey, addon
 	);
 
+
+});
+
+app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
+	console.log('issue updated.');
+
+	const db_client_config = await dbutil.selectOne(SQL`
+		SELECT * FROM userconfig
+		WHERE clientKey = ${req.context.clientKey};
+	`);
+
+	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
+
+	if (!client_config.auto_eval_on_update) { return; }
+
+	
 
 });
 

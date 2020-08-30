@@ -30,8 +30,10 @@ export async function create_tables() {
 		await dbutil.createTable(
 			SQL`CREATE TABLE userconfig (
 				clientKey TEXT PRIMARY KEY,
-				auto_eval_delay INTEGER NOT NULL,
+				auto_eval_delay_create INTEGER NOT NULL,
+				auto_eval_delay_update INTEGER NOT NULL,
 				auto_eval_enabled BOOLEAN NOT NULL,
+				auto_eval_update_reset_delay BOOLEAN NOT NULL,
 				auto_eval_risk_level_warn TEXT NOT NULL,
 				auto_eval_comment TEXT NOT NULL,
 				auto_eval_on_update BOOLEAN NOT NULL
