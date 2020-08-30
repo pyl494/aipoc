@@ -85,5 +85,14 @@ export async function set_issue_lozange(addon, clientKey, issue_key, ltext, ltyp
         }
     );
 
+}
 
+export function clamp (num, min, max) {
+	if (num < min) {
+		return min;
+	}
+	if (num > max) {
+		return max;
+	}
+	return num;
 }

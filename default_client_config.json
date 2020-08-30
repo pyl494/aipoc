@@ -1,7 +1,10 @@
 {
-	"auto_eval_delay": 5,
+	"auto_eval_delay_create": 5,
+	"auto_eval_delay_update": 5,
 	"auto_eval_enabled": true,
-	"auto_eval_risk_level_warn": "High Risk",
+	"auto_eval_update_reset_delay": true,
+	"auto_eval_update_linked": 2,
+	"auto_eval_risk_level_warn": "High Risk Only",
 	"auto_eval_comment": "",
 	"auto_eval_on_update": false
 }

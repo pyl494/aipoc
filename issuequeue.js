@@ -42,4 +42,7 @@ async function loadQueue(addon) {
 
 }
 
-module.exports = issuequeue;
+module.exports = {
+	queue: issuequeue,
+	loadQueue: loadQueue 
+};
