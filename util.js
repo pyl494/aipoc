@@ -3,7 +3,7 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 
 	var httpClient = addon.httpClient(req);
 
-	console.log("/rest/api/3/search?jql=" + encodeURI(`issueKey = ${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names");
+	console.log("/rest/api/3/search?jql=" + encodeURI(`issueKey = ${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names,changelog");
 
 	await new Promise((resolve, reject) => {
 		httpClient.get({
@@ -11,7 +11,7 @@ export async function get_issue_and_linked(app, addon, req, res, issueKey) {
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			"url": "/rest/api/3/search?jql=" + encodeURI(`issueKey=${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names"
+			"url": "/rest/api/3/search?jql=" + encodeURI(`issueKey=${issueKey} OR issue in linkedIssues(${issueKey})`) + "&maxResults=999999&fields=*all&expand=names,changelog"
 		},
 		function(err, response, body) {
 			if (err) {
@@ -43,7 +43,7 @@ export async function get_all_issues_project(app, addon, req, res, project_key) 
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
-			"url": "/rest/api/3/search?jql=project" + encodeURI(" = " + project_key) + "&maxResults=999999&fields=*all&expand=names"
+			"url": "/rest/api/3/search?jql=project" + encodeURI(" = " + project_key) + "&maxResults=999999&fields=*all&expand=names,changelog"
 		},
 		function(err, response, body) {
 			if (err) {
