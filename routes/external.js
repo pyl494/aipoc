@@ -229,6 +229,8 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 
 	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`) 
 
+    console.log(hs_resp.data)
+
 	var features = await evaluation_functions.get_feature_breakdown(hs_resp.data.features);
 
 	var prediction_data = hs_resp.data.predictions;

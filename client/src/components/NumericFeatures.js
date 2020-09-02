@@ -14,13 +14,18 @@ export default class NumericFeatures extends Component {
 
 	render() {
         var letters = ['A', 'B', 'C', 'D', 'E'];
-
-        var featureTable = features.map((feature, key) => {
+        var featureCount = features.length;
+        var featureTable = features.slice(0, 5).map((feature, key) => {
             return(
-                <tr align="center">
+                <tr>
                     <td>
                         <Container>
                             <Row>
+                                <Col xs={1}>
+                                    <Tooltip content={feature.tooltip}>
+                                        <QuestionCircleIcon size="small"/>
+                                    </Tooltip> 
+                                </Col>
                                 <Col xs={1}>
                                     {letters[key]}
                                 </Col>
@@ -30,11 +35,8 @@ export default class NumericFeatures extends Component {
                             </Row>
                         </Container>
                     </td>
-                    <td>
-                        <Container fluid={true}>
-                            {feature.value}
-                        </Container>
-                                               
+                    <td style={{textAlign: 'center'}}>
+                        {feature.value}
                     </td>
                 </tr>
             )
@@ -44,7 +46,7 @@ export default class NumericFeatures extends Component {
             <table>
                 <tbody>
                     <tr>
-                        <th>Feature</th> 
+                        <th>Top 5 of {featureCount} Features</th> 
                         <th>Value</th>                       
                     </tr>
                     {featureTable}

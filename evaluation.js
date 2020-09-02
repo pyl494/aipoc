@@ -81,7 +81,6 @@ async function delayed_evaluation(issue, clientKey, addon) {
 
 	console.log(axios_hs_resp);
 
-	var handshake_features = axios_hs_resp.features;
 	//var features = await get_feature_breakdown(handshake_features);
 	var prediction_data = axios_hs_resp.data.predictions;
 
@@ -134,26 +133,58 @@ async function get_feature_breakdown(features) {
 
 	var feature_breakdown = [];
 
-	for(var i = 0; i<5; i++) {
+	console.log(features)
+
+	for(var i = 0; i<features[Object.keys(features)[0]].length; i++) {
 
 		feature_breakdown[i] = {
 			name: "name",
 			value: "0",
-			weight: "0"
+			weight: "0",
+			tooltip: "lorum ipsum"
 		}
 
 		//name
 		feature_breakdown[i]["name"] = features[Object.keys(features)[0]][i][0];
+		
+		//list of feature tooltips -> could become a json file loaded or a database table
+		tooltips = {
+			"Number Of Issuetype Name Task":"Issue types distinguish different types of work in unique ways, and help you identify, categorize, and report on your team’s work across your Jira site. They can help your team build more structure into your working process.",
+			"Number Of Changes To Assignee Name":"JIRA Assignee is typically the account that is working on the JIRA issue.",
+			"Number Of Changes To Fixversion Names":"Fix version is the version where you plan on releasing a feature or bugfix to customers. This field is used for release planning, monitoring progress and velocity, and is used widely in reporting. This is most likely the field you want.",
+			"Number Of Changes To Description":"An issue description describes the ticket. Depending on how your team uses Jira, an issue could represent a project task, a helpdesk ticket, a leave request form, etc. In Jira Software, issues typically represent things like big features, user requirements, and software bugs",
+			"Number Of Changes To Components":"Components are subsections of a project. They are used to group issues within a project into smaller parts. You can set a default assignee for a component. This will override the project's default assignee, for issues in that component.",
+			"Number Of Comments":"Comments can range from simple text updates to let watchers know what's happening on the issue, to code snippets, images, tables, and more.",
+			"Discussion Time":"A field used to recorder the time spent in discussion as part of the issue or Jira sprints.",
+			"Number Of Changes To Resolution Name":"Resolutions are the ways in which an issue can be closed. JIRA applications ship with a set of default resolutions, but you can add your own.",
+			"Number Of Changes To Affectversion Names":"Project version(s) for which the issue is (or was) manifesting.",
+			"Delays":"This feature has affected the outcome of the machine learning prediction made on this issue.",
+			"Elapsed Time":"Time recorded on an issue.",
+			"Number Of Blocks Issues":"Linked issues can be blocking preventing progress on one before the other is complete.",
+			"Number Of Bugs":"An issue type indicating a bug in the project.",
+			"Number Of Changes To Labels":"This feature has affected the outcome of the machine learning prediction made on this issue.",
+			"Number Of Changes To Project Key":"This feature has affected the outcome of the machine learning prediction made on this issue.",
+			"Number Of Changes To Reporter Name":"JIRA Reporter is usually auto-poppulated for whoever created the JIRA issue.",
+			"Number Of Changes To Security Name":"This feature has affected the outcome of the machine learning prediction made on this issue.",
+			"Number Of Changes To Summary":"This feature has affected the outcome of the machine learning prediction made on this issue.",
+			"Number Of Changes To Timeestimate":"A field on this issue indicating the estimated time to completion.",
+			"Number Of Features":"The number of fields and content availble through this issue detected by RiskEvader.",
+			"Number Of Issues":"Jira issues in the project.",
+			"Number Of Other":"This feature has affected the outcome of the machine learning prediction made on this issue.",
+			"Number Of Participants":"A participant is someone who has contributed, or been named by an agent on a Jira issue.",
+			"Number Of Status Name Closed":"Each issue has a status, which indicates where the issue currently is in its lifecycle ('workflow'). An issue starts as being 'Open', then generally progresses to 'Resolved' and then 'Closed'.",
+			"Number Of Improvements":"A type of Jira issue: An enhancement to an existing feature.",
+			"Number Of Priority Name Blocker":"The importance of the issue in relation to other issues."
+		};
 
-		//store help text according to these
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('number_of', 'number of');
-		//features[i]["name"] = features[i]["name"].replace('name', '');
-		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('sum', '(sum)');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace(' sum', '(sum)');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('stdev', '(stdev)');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('mean', '(mean)');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('median', '(median)');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('variance', '(variance)');
-
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('max', '(max)');
+		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace('min', '(min)');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace(/_/g, ' ');
 		feature_breakdown[i]["name"] = feature_breakdown[i]["name"].replace(
 			/\w\S*/g,
@@ -162,6 +193,19 @@ async function get_feature_breakdown(features) {
 			}
 		);
 
+		
+		tempFeatureName = feature_breakdown[i]["name"]
+		tempFeatureName = tempFeatureName.replace(' (Sum)', '');
+		tempFeatureName = tempFeatureName.replace(' (Stdev)', '');
+		tempFeatureName = tempFeatureName.replace(' (Mean)', '');
+		tempFeatureName = tempFeatureName.replace(' (Median)', '');
+		tempFeatureName = tempFeatureName.replace(' (Variance)', '');
+		tempFeatureName = tempFeatureName.replace(' (Max)', '');
+		tempFeatureName = tempFeatureName.replace(' (Min)', '');
+		
+		console.log("Comparing "+tempFeatureName)
+		feature_breakdown[i]["tooltip"] = tooltips[tempFeatureName]
+		
 		//value
 		feature_breakdown[i].value = features[Object.keys(features)[0]][i][1];
 	
@@ -169,7 +213,7 @@ async function get_feature_breakdown(features) {
 		feature_breakdown[i].weight = features[Object.keys(features)[0]][i][2];
 	}
 
-	console.log("Feature breakdown: " + feature_breakdown);
+	console.log("Feature breakdown: " + JSON.stringify(feature_breakdown));
 
 	return feature_breakdown;
 }
