@@ -52,13 +52,17 @@
 		</div>
 
 		<hr/>
-			<label for="automatic-evaluation-delay-create">Delay Time on Create (minutes):</label>
-			<input type="number" id="automatic-evaluation-delay-create" name="automatic-evaluation-delay-create" min="0" max="30" value="10">
-			<label for="automatic-evaluation-delay-update">Delay Time on Update (minutes):</label>
-			<input type="number" id="automatic-evaluation-delay-update" name="automatic-evaluation-delay-update" min="0" max="30" value="10">
+			<div>
+				<p>Delay Time on Create (minutes):</p>
+				<input type="number" id="automatic-evaluation-delay-create" name="automatic-evaluation-delay-create" min="0" max="30" value="10">
+			</div>
+			<div>
+				<p>Delay Time on Update (minutes):</p>
+				<input type="number" id="automatic-evaluation-delay-update" name="automatic-evaluation-delay-update" min="0" max="30" value="10">
+			</div>
 		<hr/>
 		<div>
-			<label for="automatic-evaluation-risk-level-comment">Comment on Risk Level: </label>
+			<p>Comment on Risk Level: </p>
 			<select class="select" id="automatic-evaluation-risk-level-comment"
 				name="automatic-evaluation-risk-level-comment">
 				<option value="High Risk Only">High Risk Only</option>
@@ -70,9 +74,9 @@
 			</select>
 		</div>
 		<div class="field-group">
-			<label for="automatic-evaluation-comment">Comment Text</label>
+			<p>Comment Text:</p>
 			<textarea class="textarea" name="automatic-evaluation-comment" id="automatic-evaluation-comment"
-				placeholder=""></textarea>
+				placeholder="" style="resize: both;vertical-align: top;"></textarea>
 		</div>
 		<hr/>
 		<button class="aui-button" id="apply-changes-button" onClick="apply_changes();">Apply Changes</button>

@@ -5,7 +5,7 @@ const axios = require('axios');
 const moment = require('moment');
 const SQL = require ('sql-template-strings');
 
-// base 
+// base
 const fs = require('fs');
 const path = require('path');
 
@@ -47,7 +47,7 @@ app.get('/get-config-settings', addon.authenticate(), async function(req, res) {
 	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
 
 	res.send(JSON.stringify(client_config));
-}); 
+});
 
 app.post('/set-config-settings', addon.authenticate(), async function(req, res) {
 	const clientKey = req.context.clientKey;
@@ -72,9 +72,9 @@ app.post('/set-config-settings', addon.authenticate(), async function(req, res) 
 	if (db_client_config.found) {
 		const db_update = await dbutil.modify(SQL`
 			UPDATE userconfig
-			SET auto_eval_delay_create = ${config.auto_eval_delay_create}, 
+			SET auto_eval_delay_create = ${config.auto_eval_delay_create},
 			auto_eval_delay_update = ${config.auto_eval_delay_update},
-			auto_eval_enabled = ${config.auto_eval_on_update}, 
+			auto_eval_enabled = ${config.auto_eval_on_update},
 			auto_eval_risk_level_warn  = ${config.auto_eval_risk_level_warn},
 			auto_eval_comment = ${config.auto_eval_comment},
 			auto_eval_on_update = ${config.auto_eval_on_update}
@@ -113,7 +113,7 @@ app.post('/set-config-settings', addon.authenticate(), async function(req, res) 
 
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
     console.log('webhook-issue-created fired!');
-	
+
 	const issue = req.body.issue;
 
 	// Filter out non-change request issues.
@@ -145,7 +145,7 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
 
     // Insert into the Queue
     dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctimestamp);
-    
+
     // Incase we have to clear it for whatever reason.
     issuequeue.queue[issue.self] = setTimeout(
 		evaluation_functions.delayed_evaluation
@@ -167,7 +167,7 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
 
 	if (!client_config.auto_eval_on_update) { return; }
 
-	
+
 
 });
 
@@ -196,7 +196,7 @@ app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) 
             "body": loz_obj
         },
         function(err, response, body) {
-            if (err) { 
+            if (err) {
             console.log(response.statusCode + ": " + err);
             res.send("Error: " + response.statusCode + ": " + err);
             }
@@ -217,7 +217,7 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 	var last_updated = await evaluation_functions.get_last_updated(issues);
 
 	console.log(last_updated);
-	
+
 	const add_resp = await axios({
 		method: 'post',
 		url: 'http://localhost:8080/micro?type=add',
@@ -225,9 +225,11 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 		data: {
 			issues: issues
 		}
+	}).catch((error) => {
+		console.error(error);
 	});
 
-	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${issue_key}&updated=${last_updated}`) 
+	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${encodeURIComponent(issue_key)}&updated=${encodeURIComponent(last_updated)}`)
 
     console.log(hs_resp.data)
 
@@ -240,7 +242,8 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 			evaluation_functions.evaluation_lozange_set_from_data(addon, req.context.clientKey, prediction_data, issue_key);
 		}
 		catch (err) {
-			console.error(err);
+            console.error(err);
+            console.error(hs_resp.data)
 		}
 	}
 
@@ -319,7 +322,7 @@ app.get('/set-issue-evaluation-setting', addon.authenticate(), function(req, res
 
         res.send(JSON.stringify(result))
     });
-    
+
 });
 
 app.get('/get-issue-data', addon.authenticate(), function(req, res) {
@@ -335,14 +338,14 @@ app.get('/get-issue-data', addon.authenticate(), function(req, res) {
             "url": "/rest/api/3/issue/" + issueKey
         },
         function(err, response, body) {
-            if (err) { 
+            if (err) {
             console.log(response.statusCode + ": " + err);
             res.send("Error: " + response.statusCode + ": " + err);
             }
             else {
-                
+
                 // Process stuff.
-                
+
                 var jsonData = body;
                 var issueObject = JSON.parse(jsonData);
                 var sendObject = { };
