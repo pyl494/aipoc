@@ -9,6 +9,7 @@ const check = require('./check.js');
 const risk_levels = require('./risk.js');
 
 const default_client_settings = require('./default_client_config.json');
+const SQL = require('sql-template-strings');
 
 // Gets an issue, the issues linked to it, using the REST API given a clientKey for authentication.
 async function get_issue_and_linked ( issueKey, clientKey, addon ) {
@@ -49,13 +50,13 @@ async function delayed_evaluation(issue, clientKey, addon) {
 
 	const db_client_config = await dbutil.selectOne(SQL`
 		SELECT * FROM userconfig
-		WHERE clientKey = ${req.context.clientKey};
+		WHERE clientKey = ${clientKey};
 	`);
 
 	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
 
 	dbmanage.remove_from_queue(issueSelf);
-	issuequeue.queue[issue.self] = null;
+	//issuequeue.queue.delete(issueSelf);
 
 	var issues = await get_issue_and_linked(issueKey, clientKey, addon);
 
@@ -72,7 +73,7 @@ async function delayed_evaluation(issue, clientKey, addon) {
 
 	const axios_hs_resp = await axios({ 
 		method: 'post',
-		url: `http://localhost:8080/micro?type=handshake&change_request=${issueKey}&updated=${last_updated}`,
+		url: `http://localhost:8080/micro?type=handshake&change_request=${encodeURIComponent(issueKey)}&updated=${encodeURIComponent(last_updated)}`,
 		headers: {},
 		data: {
 			issues: issues
@@ -311,7 +312,7 @@ async function create_comment (addon, clientKey, issueKey, commentData) {
 				'Content-Type': 'application/json'
 			},
 			"url": `/rest/api/3/issue/${issueKey}/comment`,
-			"body": commentData
+			"body": JSON.stringify(commentData)
 		},
 		function(err, response, body) {
 			if (response == 200) {

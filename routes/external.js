@@ -147,12 +147,9 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctimestamp);
 
     // Incase we have to clear it for whatever reason.
-    issuequeue.queue[issue.self] = setTimeout(
-		evaluation_functions.delayed_evaluation
-		, timewait, issue, req.context.clientKey, addon
-	);
+    const timer = setTimeout(() => { evaluation_functions.delayed_evaluation(issue, req.context.clientKey, addon); }, timewait);
 
-
+	issuequeue.queue.set(issue.self, timer);
 });
 
 app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
@@ -214,6 +211,7 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 
 	var issues = await util.get_issue_and_linked(app, addon, req, res, issue_key);
 	issues = issues.issues;
+	console.log(issues);
 	var last_updated = await evaluation_functions.get_last_updated(issues);
 
 	console.log(last_updated);
@@ -229,7 +227,9 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 		console.error(error);
 	});
 
-	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${encodeURIComponent(issue_key)}&updated=${encodeURIComponent(last_updated)}`)
+	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${encodeURIComponent(issue_key)}&updated=${encodeURIComponent(last_updated)}`);
+
+	console.log(hs_resp.data);
 
     console.log(hs_resp.data)
 

@@ -3,7 +3,7 @@ const dbutil = require('./dbutil.js');
 const SQL = require('sql-template-strings');
 const evaluation_functions = require('./evaluation.js');
 
-var issuequeue = { };
+var issuequeue = new Map();
 
 async function loadQueue(addon) {
 
