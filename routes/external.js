@@ -143,29 +143,71 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
     var ctimestamp = current_time.valueOf();
     var timewait = ctimestamp - timewait;
 
+	const timer = setTimeout(() => { evaluation_functions.delayed_evaluation(issue, req.context.clientKey, addon); }, timewait);
+
     // Insert into the Queue
-    dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctimestamp);
-
-    // Incase we have to clear it for whatever reason.
-    const timer = setTimeout(() => { evaluation_functions.delayed_evaluation(issue, req.context.clientKey, addon); }, timewait);
-
-	issuequeue.queue.set(issue.self, timer);
+    dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, timer, ctimestamp);
 });
 
-app.post('/webhook-issue-created', addon.authenticate(), async function(req, res) {
+app.post('/webhook-issue-updated', addon.authenticate(), async function(req, res) {
 	console.log('issue updated.');
 
+	// Attempt to get the stored client configuration
 	const db_client_config = await dbutil.selectOne(SQL`
 		SELECT * FROM userconfig
 		WHERE clientKey = ${req.context.clientKey};
 	`);
 
+	// If found, use found client config, otherwise result to default.
 	const client_config = db_client_config.found ? db_client_config.result : default_client_settings;
 
+	// If we don't auto evaluate on update then we just return.
 	if (!client_config.auto_eval_on_update) { return; }
 
+	// Grab all the issues linked to this one.
+	const linked_issues = await util.get_issue_and_linked(app, addon, req, res, req.body.issue.key);
 
+	// For each issue
+	for (issue of linked_issues) {
+		// We are only looking for change requests.
+		if (!issue.fields.issuetype.name.toLowerCase().includes('change')) {
+			continue;
+		}
 
+		// See if we can find if it's already in queue.
+		const queue_object = await dbutil.selectOne(SQL`
+			SELECT * FROM evalqueue
+			WHERE self = ${issue.self};
+		`);
+
+		// If it's found and our configuration says we reset the timer.
+		if (queue_object.found && client_config.auto_eval_update_reset_delay) {
+			// Clear the previous timer
+			clearTimeout(queue_object.result.timer);
+
+			// Delete the previous queue entry.
+			const queue_delete = await dbutil.modify(SQL`
+				DELETE FROM evalqueue
+				WHERE self = ${issue.self};
+			`);
+		}
+		else if (queue_object.found) {
+			// Oh we find it in queue, but we dont reset, let's just go to the next issue.
+			continue;
+		}
+
+		// Time handling  (get current time, get the delayed time, get the time difference)
+		var current_time = moment();
+		var timewait = current_time.valueOf();
+		current_time.add(client_config.auto_eval_delay_update, 'm');
+		var ctimestamp = current_time.valueOf();
+		var timewait = ctimestamp - timewait;
+
+		// Set our timer.
+		const timer = setTimeout(() => { evaluation_functions.delayed_evaluation(issue, req.context.clientKey, addon); }, timewait);
+		// Insert into the Queue
+		dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, timer, ctimestamp);
+	}
 });
 
 app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) {
@@ -176,7 +218,6 @@ app.get('/set-issue-property-lozange', addon.authenticate(), function(req, res) 
 
     var appkey = "risk-evader-app-cain";
     var modulekey = "my-issue-glance";
-
 
     var construct_url = `/rest/api/3/issue/${issueKey}/properties/com.atlassian.jira.issue:${appkey}:${modulekey}:status`;
 
@@ -211,10 +252,7 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 
 	var issues = await util.get_issue_and_linked(app, addon, req, res, issue_key);
 	issues = issues.issues;
-	console.log(issues);
 	var last_updated = await evaluation_functions.get_last_updated(issues);
-
-	console.log(last_updated);
 
 	const add_resp = await axios({
 		method: 'post',
@@ -229,9 +267,6 @@ app.get('/get-issue-evaluation', addon.authenticate(), async function(req, res) 
 
 	const hs_resp = await axios.post(`http://localhost:8080/micro?type=handshake&change_request=${encodeURIComponent(issue_key)}&updated=${encodeURIComponent(last_updated)}`);
 
-	console.log(hs_resp.data);
-
-    console.log(hs_resp.data)
 
 	var features = await evaluation_functions.get_feature_breakdown(hs_resp.data.features);
 
@@ -367,8 +402,6 @@ app.get('/get-issue-data', addon.authenticate(), function(req, res) {
 
                     sendObject.linked.push(linkedData);
                 }
-
-                console.log(sendObject);
 
 
                 res.send(JSON.stringify(sendObject));

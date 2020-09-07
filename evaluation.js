@@ -80,8 +80,6 @@ async function delayed_evaluation(issue, clientKey, addon) {
 		}
 	});
 
-	console.log(axios_hs_resp);
-
 	//var features = await get_feature_breakdown(handshake_features);
 	var prediction_data = axios_hs_resp.data.predictions;
 
@@ -134,7 +132,6 @@ async function get_feature_breakdown(features) {
 
 	var feature_breakdown = [];
 
-	console.log(features)
 
 	for(var i = 0; i<features[Object.keys(features)[0]].length; i++) {
 
@@ -204,7 +201,6 @@ async function get_feature_breakdown(features) {
 		tempFeatureName = tempFeatureName.replace(' (Max)', '');
 		tempFeatureName = tempFeatureName.replace(' (Min)', '');
 		
-		console.log("Comparing "+tempFeatureName)
 		feature_breakdown[i]["tooltip"] = tooltips[tempFeatureName]
 		
 		//value
@@ -214,7 +210,6 @@ async function get_feature_breakdown(features) {
 		feature_breakdown[i].weight = features[Object.keys(features)[0]][i][2];
 	}
 
-	console.log("Feature breakdown: " + JSON.stringify(feature_breakdown));
 
 	return feature_breakdown;
 }

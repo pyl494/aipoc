@@ -30,13 +30,23 @@ async function loadQueue(addon) {
 				current.clientKey,
 				addon
 			);
+
+			const dbdelete = await dbutil.modify(SQL`
+				DELETE FROM evalqueue
+				WHERE self = ${current.self};
+			`);
 		}
 		else {
 			var timewait = currentTime - currentIssueTime;
-			issuequeue[issue.self] = setTimeout(
+			const timer = setTimeout(
 				evaluation_functions.delayed_evaluation
 				, timewait, { key: current.issueKey, self: current.self }, current.clientKey, addon
 			);
+			const dbupdate = await dbutil.modify(SQL`
+				UPDATE evalqueue
+				SET timer = ${timer}
+				WHERE self = ${current.self};
+			`);
 		}
 	}
 
