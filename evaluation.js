@@ -93,7 +93,13 @@ async function delayed_evaluation(issue, clientKey, addon) {
 		evaluation_lozange_set(addon, clientKey, issueKey, risk);
 
 		if (check_risk_comment_level(risk, client_config)) {
-			const comment_data = get_comment_data(client_config);
+
+			const template_context = {
+				risk: risk,
+				issue_key: issueKey
+			};
+
+			const comment_data = get_comment_data(client_config, template_context);
 			create_comment(addon, clientKey, issueKey, comment_data);
 		}
 	}
@@ -351,7 +357,23 @@ function check_risk_comment_level(risk, config) {
 
 }
 
-function get_comment_data(config) {
+/** 
+ * @param text {string}
+ * @param context {object}
+*/
+const template_regex = /{{[\s\S]*}}/g
+function render_template_comment(text, context) {
+	var rendered = text.replace(template_regex,
+		(match) => {
+			let internal = match.substring(2, match.length-2).toLowerCase();
+			if (check.isDefined(context[internal])) { return context[internal]; }
+			return match;
+	});
+
+	return rendered;
+}
+
+function get_comment_data(config, context) {
 	const comment = {
 		"body": {
 			"type": "doc",
@@ -360,7 +382,7 @@ function get_comment_data(config) {
 				{ "type": "paragraph", 
 				"content": [
 					{
-						"text": config.auto_eval_comment,
+						"text": render_template_comment(config.auto_eval_comment, context),
 						"type": "text"
 					}
 				]
