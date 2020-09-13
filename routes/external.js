@@ -165,10 +165,11 @@ app.post('/webhook-issue-updated', addon.authenticate(), async function(req, res
 	if (!client_config.auto_eval_on_update) { return; }
 
 	// Grab all the issues linked to this one.
-	const linked_issues = await util.get_issue_and_linked(app, addon, req, res, req.body.issue.key);
+	const linked_issues = await evaluation_functions.get_issue_and_linked(req.body.issue.key, req.context.clientKey, addon);
+	console.log(linked_issues);
 
 	// For each issue
-	for (issue of linked_issues) {
+	for (const issue of linked_issues) {
 		// We are only looking for change requests.
 		if (!issue.fields.issuetype.name.toLowerCase().includes('change')) {
 			continue;

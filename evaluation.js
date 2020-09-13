@@ -61,7 +61,7 @@ async function delayed_evaluation(issue, clientKey, addon) {
 	var issues = await get_issue_and_linked(issueKey, clientKey, addon);
 
 	var last_updated = await get_last_updated(issues);
-
+	
 	const axios_add_resp = await axios({ 
 		method: 'post',
 		url: 'http://localhost:8080/micro?type=add',
@@ -398,5 +398,6 @@ module.exports = {
 	create_comment: create_comment,
 	get_feature_breakdown: get_feature_breakdown,
 	get_last_updated: get_last_updated,
-	evaluation_lozange_set_from_data: evaluation_lozange_set_from_data
+	evaluation_lozange_set_from_data: evaluation_lozange_set_from_data,
+	get_issue_and_linked: get_issue_and_linked
 }
