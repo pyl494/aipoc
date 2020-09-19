@@ -30,6 +30,7 @@ import helmet from 'helmet';
 import routes from './routes';
 
 const dbmanage = require('./dbmanage.js');
+const evaluation = require('./evaluation.js');
 
 // Bootstrap Express and atlassian-connect-express
 const app = express();
@@ -81,7 +82,6 @@ hbs.registerHelper('furl', function(url){ return app.locals.furl(url); });
 // Mount the static resource dir
 app.use(express.static(staticDir));
 
-dbmanage.create_tables();
 // Atlassian security policy requirements
 // http://go.atlassian.com/security-requirements-for-cloud-apps
 app.use(helmet.noCache());
@@ -91,6 +91,7 @@ if (devEnv) app.use(errorHandler());
 
 // Wire up routes
 routes(app, addon);
+dbmanage.create_tables().then(() => { evaluation.delay_evaluation_loop(addon) });
 
 // Boot the HTTP server
 http.createServer(app).listen(port, () => {
