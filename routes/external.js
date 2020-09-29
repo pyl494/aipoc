@@ -145,12 +145,8 @@ app.post('/webhook-issue-created', addon.authenticate(), async function(req, res
 	var timewait = current_time.valueOf();
     current_time.add(client_config.auto_eval_delay_create, 'm');
     var ctimestamp = current_time.valueOf();
-    var timewait = ctimestamp - timewait;
-
-	const timer = setTimeout(() => { evaluation_functions.delayed_evaluation(issue, req.context.clientKey, addon); }, timewait);
-
-    // Insert into the Queue
-    dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, timer, ctimestamp);
+	
+    dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctimestamp);
 });
 
 app.post('/webhook-issue-updated', addon.authenticate(), async function(req, res) {
@@ -179,39 +175,25 @@ app.post('/webhook-issue-updated', addon.authenticate(), async function(req, res
 			continue;
 		}
 
-		// See if we can find if it's already in queue.
+		// Find if we have it in queue already.
 		const queue_object = await dbutil.selectOne(SQL`
 			SELECT * FROM evalqueue
 			WHERE self = ${issue.self};
 		`);
 
-		// If it's found and our configuration says we reset the timer.
 		if (queue_object.found && client_config.auto_eval_update_reset_delay) {
-			// Clear the previous timer
-			clearTimeout(queue_object.result.timer);
-
-			// Delete the previous queue entry.
 			const queue_delete = await dbutil.modify(SQL`
 				DELETE FROM evalqueue
 				WHERE self = ${issue.self};
 			`);
 		}
-		else if (queue_object.found) {
-			// Oh we find it in queue, but we dont reset, let's just go to the next issue.
-			continue;
-		}
+		else if (queue_object.found) { continue; }
 
-		// Time handling  (get current time, get the delayed time, get the time difference)
 		var current_time = moment();
-		var timewait = current_time.valueOf();
 		current_time.add(client_config.auto_eval_delay_update, 'm');
-		var ctimestamp = current_time.valueOf();
-		var timewait = ctimestamp - timewait;
+		var ctime = current_time.valueOf();
 
-		// Set our timer.
-		const timer = setTimeout(() => { evaluation_functions.delayed_evaluation(issue, req.context.clientKey, addon); }, timewait);
-		// Insert into the Queue
-		dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, timer, ctimestamp);
+		await dbmanage.insert_into_queue(issue.self, issue.key, req.context.clientKey, ctime);
 	}
 });
 

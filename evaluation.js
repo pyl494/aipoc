@@ -43,6 +43,40 @@ async function get_issue_and_linked ( issueKey, clientKey, addon ) {
 	return issues;
 }
 
+async function delay_evaluation_loop(addon) {
+	const currentTime = moment();
+	const cTime = currentTime.valueOf();
+
+	var validIssuesQuery = await dbutil.select(SQL`
+		SELECT * FROM evalqueue
+		WHERE timestamp >= ${cTime}
+		ORDER BY timestamp ASC;
+	`);
+
+	if (!validIssuesQuery.found) {
+		setTimeout(
+			delay_evaluation_loop,
+			30*1000
+		); // Let's have a looksie in 30 seconds.
+		return;
+	}
+
+	for (const issue of validIssuesQuery.result) {
+		var argIssue = {
+			"key": issue.issueKey,
+			"self": issue.self
+		};
+		await delayed_evaluation(argIssue, issue.clientKey, addon);
+	}
+
+	setTimeout(
+		delay_evaluation_loop,
+		30*1000, addon
+	); // Let's have a looksie in 30 seconds.
+
+
+}
+
 // For app.post('/webhook-issue-created') -> setTimeout()
 async function delayed_evaluation(issue, clientKey, addon) {
 	var issueKey = issue.key;
@@ -401,5 +435,6 @@ module.exports = {
 	get_feature_breakdown: get_feature_breakdown,
 	get_last_updated: get_last_updated,
 	evaluation_lozange_set_from_data: evaluation_lozange_set_from_data,
-	get_issue_and_linked: get_issue_and_linked
+	get_issue_and_linked: get_issue_and_linked,
+	delay_evaluation_loop: delay_evaluation_loop
 }

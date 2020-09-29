@@ -52,11 +52,11 @@ export async function insert_into_his(_self, issuekey) {
 
 }
 
-export async function insert_into_queue(self, issueKey, clientKey, timer, timestamp) {
+export async function insert_into_queue(self, issueKey, clientKey, timestamp) {
 
 	return await dbutil.insert(SQL`INSERT INTO 
-		evalqueue (self, issuekey, clientKey, timerId, timestamp) 
-		VALUES (${self}, ${issueKey}, ${clientKey}, ${timer}, ${timestamp});`);
+		evalqueue (self, issuekey, clientKey, timestamp) 
+		VALUES (${self}, ${issueKey}, ${clientKey}, ${timestamp});`);
 
 }
 
