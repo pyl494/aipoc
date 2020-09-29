@@ -43,8 +43,6 @@ function set_stored_status(status, callback) {
 			return callback();
 		}
 	});
-
-
 }
 
 function set_lozange(ltext, ltype) {
@@ -61,9 +59,6 @@ function set_lozange(ltext, ltype) {
 		"error": function (xhr, textStatus, errorThrown) { console.error(errorThrown); },
 		"success": function(data) { console.log(data); }
 	});
-
-
-
 }
 
 function render_from_status(result) {

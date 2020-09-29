@@ -155,6 +155,7 @@ async function get_feature_breakdown(features) {
 		tooltips = {
 			"Number Of Issuetype Name Task":"Issue types distinguish different types of work in unique ways, and help you identify, categorize, and report on your team’s work across your Jira site. They can help your team build more structure into your working process.",
 			"Number Of Changes To Assignee Name":"JIRA Assignee is typically the account that is working on the JIRA issue.",
+			"Number Of Changes To Assignee Displayname":"JIRA Assignee is typically the account that is working on the JIRA issue.",
 			"Number Of Changes To Fixversion Names":"Fix version is the version where you plan on releasing a feature or bugfix to customers. This field is used for release planning, monitoring progress and velocity, and is used widely in reporting. This is most likely the field you want.",
 			"Number Of Changes To Description":"An issue description describes the ticket. Depending on how your team uses Jira, an issue could represent a project task, a helpdesk ticket, a leave request form, etc. In Jira Software, issues typically represent things like big features, user requirements, and software bugs",
 			"Number Of Changes To Components":"Components are subsections of a project. They are used to group issues within a project into smaller parts. You can set a default assignee for a component. This will override the project's default assignee, for issues in that component.",
@@ -206,6 +207,7 @@ async function get_feature_breakdown(features) {
 		tempFeatureName = tempFeatureName.replace(' (Variance)', '');
 		tempFeatureName = tempFeatureName.replace(' (Max)', '');
 		tempFeatureName = tempFeatureName.replace(' (Min)', '');
+		tempFeatureName = tempFeatureName.replace(' Displayname', '');
 		
 		feature_breakdown[i]["tooltip"] = tooltips[tempFeatureName]
 		

@@ -36,6 +36,10 @@ app.get('/configure', addon.authenticate(), async function(req, res) {
 	res.render('configure', { });
 });
 
+app.get('/report', addon.authenticate(), async function(req, res) {
+	res.render('report', { });
+});
+
 app.get('/get-config-settings', addon.authenticate(), async function(req, res) {
 	console.log(req.context.clientKey);
 
