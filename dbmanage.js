@@ -12,7 +12,6 @@ export async function create_tables() {
 				self TEXT PRIMARY KEY,
 				issueKey TEXT NOT NULL,
 				clientKey TEXT NOT NULL,
-				timerId INTEGER NOT NULL,
 				timestamp INTEGER NOT NULL
 			);`
 		);

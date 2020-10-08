@@ -47,16 +47,20 @@ async function delay_evaluation_loop(addon) {
 	const currentTime = moment();
 	const cTime = currentTime.valueOf();
 
+	console.log("delay_evaluation_loop: " + currentTime.format("dddd, MMMM Do YYYY, h:mm:ss:SSSS a"));
+
 	var validIssuesQuery = await dbutil.select(SQL`
 		SELECT * FROM evalqueue
-		WHERE timestamp >= ${cTime}
+		WHERE timestamp <= ${cTime}
 		ORDER BY timestamp ASC;
 	`);
+
+	console.log('found valid issues: ' + validIssuesQuery.result.length);
 
 	if (!validIssuesQuery.found) {
 		setTimeout(
 			delay_evaluation_loop,
-			30*1000
+			30*1000, addon
 		); // Let's have a looksie in 30 seconds.
 		return;
 	}
@@ -66,7 +70,12 @@ async function delay_evaluation_loop(addon) {
 			"key": issue.issueKey,
 			"self": issue.self
 		};
-		await delayed_evaluation(argIssue, issue.clientKey, addon);
+		try {
+			await delayed_evaluation(argIssue, issue.clientKey, addon);
+		}
+		catch (ex) {
+			console.log('Caught Exception: ' + ex);
+		}
 	}
 
 	setTimeout(
